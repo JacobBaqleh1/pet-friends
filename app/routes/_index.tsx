@@ -1,4 +1,7 @@
-import type { MetaFunction } from "@remix-run/node";
+import type { MetaFunction, LoaderArgs } from "@remix-run/node";
+
+import { json } from "@remix-run/node";
+import { useLoaderData } from "@remix-run/react";
 
 export const meta: MetaFunction = () => {
   return [
@@ -7,35 +10,48 @@ export const meta: MetaFunction = () => {
   ];
 };
 
+type Animals = {
+  name: string;
+  domains: string[];
+};
+
+export const loader = async (args: LoaderArgs) => {
+  const response = await fetch("https://api.petfinder.com/v2/oauth2/token", {
+    method: "POST",
+    body: new URLSearchParams({
+      grant_type: "client_credentials",
+      client_id: "0b5CWcWxxaW3fXPw7Lh2p0qMX9fpaYpOctVBLwbT3V4q2ift7I",
+      client_secret: "un5wi6EsUOmgy0qwvsfHTofWlXL7Pboo780HRHFS",
+    }),
+  });
+  const tokenData = await response.json();
+
+  const res = await fetch("https://api.petfinder.com/v2/animals", {
+    headers: {
+      Authorization: `Bearer ${tokenData.access_token}`,
+    },
+  });
+  const animalData: Animals[] = await res.json();
+  return json({ animalData });
+};
+
 export default function Index() {
+  const { animalData } = useLoaderData<typeof loader>();
+  console.log("animalData:", animalData);
   return (
-    <div style={{ fontFamily: "system-ui, sans-serif", lineHeight: "1.8" }}>
-      <h1>Welcome to Remix</h1>
-      <ul>
-        <li>
-          <a
-            target="_blank"
-            href="https://remix.run/tutorials/blog"
-            rel="noreferrer"
-          >
-            15m Quickstart Blog Tutorial
-          </a>
-        </li>
-        <li>
-          <a
-            target="_blank"
-            href="https://remix.run/tutorials/jokes"
-            rel="noreferrer"
-          >
-            Deep Dive Jokes App Tutorial
-          </a>
-        </li>
-        <li>
-          <a target="_blank" href="https://remix.run/docs" rel="noreferrer">
-            Remix Docs
-          </a>
-        </li>
-      </ul>
-    </div>
+    <main>
+      <button>click me for stuff</button>
+      <div>
+        <ul>
+          {Array.isArray(animalData.animals) &&
+            animalData.animals.map((animal) => (
+              <li key={animal.id}>
+                <p>Name: {animal.name}</p>
+              </li>
+            ))}
+        </ul>
+        <p>hi</p>
+      </div>
+    </main>
   );
 }
