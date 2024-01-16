@@ -45,22 +45,9 @@ export default function Index() {
   //const [zipcode, setZipcode] = use("");
   return (
     <main>
-      <Form action="/events" method="get">
-        <label htmlFor="zipcode">Enter Zipcode</label>
-        <input
-          name="title"
-          type="text"
-          id="zipcode"
-          placeholder="Enter Zipcode..."
-        />
-        <input name="description" type="text" />
-      </Form>
-
-      <button className=""> Submit Button</button>
+      <button>click me for stuff</button>
       <div>
-        {/* 
-        list of animal names
-        <ul>
+        {/* <ul>
           {Array.isArray(animalData.animals) &&
             animalData.animals.map((animal) => (
               <li key={animal.id}>
@@ -69,6 +56,18 @@ export default function Index() {
             ))}
         </ul> */}
         <p>hi</p>
+        <Form action="/zipcode" method="post">
+          <label htmlFor="zipcode" className="block font-semibold text-lg">
+            Enter Zipcode
+          </label>
+          <input
+            type="text"
+            id="zipcode"
+            placeholder="Enter Zipcode..."
+            className="w-full border border-gray-300 rounded-lg px-4 py-2 mt-2"
+          />
+          <button>Submmit</button>
+        </Form>
       </div>
     </main>
   );

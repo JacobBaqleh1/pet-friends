@@ -1,3 +1,7 @@
+<<<<<<< HEAD
+=======
+
+>>>>>>> e6e9da6cb982198e0268a5e6c28510a231f5c03d
 import type { LinksFunction } from "@remix-run/node";
 import {
   Links,
@@ -8,10 +12,18 @@ import {
   ScrollRestoration,
 } from "@remix-run/react";
 
+<<<<<<< HEAD
 import styles from "./tailwind.css";
 
 export const links: LinksFunction = () => [{ rel: "stylesheet", href: styles }];
+=======
+>>>>>>> e6e9da6cb982198e0268a5e6c28510a231f5c03d
 
+import styles from "./tailwind.css";
+
+export const links: LinksFunction = () => [
+  { rel: "stylesheet", href: styles },
+];
 export default function App() {
   return (
     <html lang="en">
