@@ -1,7 +1,7 @@
 import type { MetaFunction, LoaderArgs } from "@remix-run/node";
 
 import { json } from "@remix-run/node";
-import { useLoaderData } from "@remix-run/react";
+import { useLoaderData, Form } from "@remix-run/react";
 
 export const meta: MetaFunction = () => {
   return [
@@ -16,6 +16,7 @@ type Animals = {
 };
 
 export const loader = async (args: LoaderArgs) => {
+  //fetching api token
   const response = await fetch("https://api.petfinder.com/v2/oauth2/token", {
     method: "POST",
     body: new URLSearchParams({
@@ -25,12 +26,15 @@ export const loader = async (args: LoaderArgs) => {
     }),
   });
   const tokenData = await response.json();
-
-  const res = await fetch("https://api.petfinder.com/v2/animals", {
-    headers: {
-      Authorization: `Bearer ${tokenData.access_token}`,
-    },
-  });
+  //fetching api data
+  const res = await fetch(
+    `https://api.petfinder.com/v2/animals?location=${94546}`,
+    {
+      headers: {
+        Authorization: `Bearer ${tokenData.access_token}`,
+      },
+    }
+  );
   const animalData: Animals[] = await res.json();
   return json({ animalData });
 };
@@ -38,10 +42,24 @@ export const loader = async (args: LoaderArgs) => {
 export default function Index() {
   const { animalData } = useLoaderData<typeof loader>();
   console.log("animalData:", animalData);
+  //const [zipcode, setZipcode] = use("");
   return (
     <main>
-      <button>click me for stuff</button>
+      <Form action="/events" method="get">
+        <label htmlFor="zipcode">Enter Zipcode</label>
+        <input
+          name="title"
+          type="text"
+          id="zipcode"
+          placeholder="Enter Zipcode..."
+        />
+        <input name="description" type="text" />
+      </Form>
+
+      <button className=""> Submit Button</button>
       <div>
+        {/* 
+        list of animal names
         <ul>
           {Array.isArray(animalData.animals) &&
             animalData.animals.map((animal) => (
@@ -49,7 +67,7 @@ export default function Index() {
                 <p>Name: {animal.name}</p>
               </li>
             ))}
-        </ul>
+        </ul> */}
         <p>hi</p>
       </div>
     </main>
