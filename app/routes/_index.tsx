@@ -1,8 +1,7 @@
-
-import type { MetaFunction, LoaderArgs } from "@remix-run/node";
+import type { LoaderFunctionArgs, MetaFunction } from "@remix-run/node";
 
 import { json } from "@remix-run/node";
-import { useLoaderData, Form } from "@remix-run/react";
+import { useLoaderData } from "@remix-run/react";
 
 export const meta: MetaFunction = () => {
   return [
@@ -16,7 +15,8 @@ type Animals = {
   domains: string[];
 };
 
-export const loader = async (args: LoaderArgs) => {
+export const loader = async (args: LoaderFunctionArgs) => {
+  //fetching api token
   const response = await fetch("https://api.petfinder.com/v2/oauth2/token", {
     method: "POST",
     body: new URLSearchParams({
@@ -26,12 +26,15 @@ export const loader = async (args: LoaderArgs) => {
     }),
   });
   const tokenData = await response.json();
-
-  const res = await fetch("https://api.petfinder.com/v2/animals", {
-    headers: {
-      Authorization: `Bearer ${tokenData.access_token}`,
-    },
-  });
+  //fetching api data
+  const res = await fetch(
+    `https://api.petfinder.com/v2/animals?location=${94546}`,
+    {
+      headers: {
+        Authorization: `Bearer ${tokenData.access_token}`,
+      },
+    }
+  );
   const animalData: Animals[] = await res.json();
   return json({ animalData });
 };
@@ -39,11 +42,11 @@ export const loader = async (args: LoaderArgs) => {
 export default function Index() {
   const { animalData } = useLoaderData<typeof loader>();
   console.log("animalData:", animalData);
+  //const [zipcode, setZipcode] = use("");
   return (
     <main>
-    <h1>PetFriendsAdoption.com</h1>    
-      <button className="text-red-500 text-2xl">click me for stuff</button>
       <div>
+        <h1>PET FRIENDS!</h1>
         {/* <ul>
           {Array.isArray(animalData.animals) &&
             animalData.animals.map((animal) => (
@@ -52,20 +55,6 @@ export default function Index() {
               </li>
             ))}
         </ul> */}
-        <p>hi</p>
-        <Form action="/zipcode" method="post">
-        <label htmlFor="zipcode" className="block font-semibold text-lg">
-          Enter Zipcode
-        </label>
-        <input
-          type="text"
-          id="zipcode"
-          placeholder="Enter Zipcode..."
-          
-          className="w-full border border-gray-300 rounded-lg px-4 py-2 mt-2"
-        />          
-        <button>Submmit</button>
-    </Form>   
       </div>
     </main>
   );
