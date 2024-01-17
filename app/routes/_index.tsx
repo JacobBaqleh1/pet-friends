@@ -41,6 +41,7 @@ export default function Index() {
   console.log("animalData:", animalData);
   return (
     <main>
+    <h1>PetFriendsAdoption.com</h1>    
       <button className="text-red-500 text-2xl">click me for stuff</button>
       <div>
         {/* <ul>
