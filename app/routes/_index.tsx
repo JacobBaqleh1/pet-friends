@@ -1,7 +1,7 @@
-import type { LoaderFunctionArgs, MetaFunction } from "@remix-run/node";
+import type {  MetaFunction } from "@remix-run/node";
 
-import { json } from "@remix-run/node";
-import { useLoaderData } from "@remix-run/react";
+//import { json } from "@remix-run/node";
+//import {   useLoaderData } from "@remix-run/react";
 
 export const meta: MetaFunction = () => {
   return [
@@ -10,38 +10,38 @@ export const meta: MetaFunction = () => {
   ];
 };
 
-type Animals = {
-  name: string;
-  domains: string[];
-};
+// type Animals = {
+//   name: string;
+//   domains: string[];
+// };
 
-export const loader = async (args: LoaderFunctionArgs) => {
-  //fetching api token
-  const response = await fetch("https://api.petfinder.com/v2/oauth2/token", {
-    method: "POST",
-    body: new URLSearchParams({
-      grant_type: "client_credentials",
-      client_id: "0b5CWcWxxaW3fXPw7Lh2p0qMX9fpaYpOctVBLwbT3V4q2ift7I",
-      client_secret: "un5wi6EsUOmgy0qwvsfHTofWlXL7Pboo780HRHFS",
-    }),
-  });
-  const tokenData = await response.json();
-  //fetching api data
-  const res = await fetch(
-    `https://api.petfinder.com/v2/animals?location=${94546}`,
-    {
-      headers: {
-        Authorization: `Bearer ${tokenData.access_token}`,
-      },
-    }
-  );
-  const animalData: Animals[] = await res.json();
-  return json({ animalData });
-};
+// export const loader = async (args: LoaderFunctionArgs) => {
+//   //fetching api token
+//   const response = await fetch("https://api.petfinder.com/v2/oauth2/token", {
+//     method: "POST",
+//     body: new URLSearchParams({
+//       grant_type: "client_credentials",
+//       client_id: "0b5CWcWxxaW3fXPw7Lh2p0qMX9fpaYpOctVBLwbT3V4q2ift7I",
+//       client_secret: "un5wi6EsUOmgy0qwvsfHTofWlXL7Pboo780HRHFS",
+//     }),
+//   });
+//   const tokenData = await response.json();
+//   //fetching api data
+//   const res = await fetch(
+//     `https://api.petfinder.com/v2/animals?location=${94546}`,
+//     {
+//       headers: {
+//         Authorization: `Bearer ${tokenData.access_token}`,
+//       },
+//     }
+//   );
+//   const animalData: Animals[] = await res.json();
+//   return json({ animalData });
+// };
 
 export default function Index() {
-  const { animalData } = useLoaderData<typeof loader>();
-  console.log("animalData:", animalData);
+  //const { animalData } = useLoaderData<typeof loader>();
+ // console.log("animalData:", animalData);
   //const [zipcode, setZipcode] = use("");
   return (
     <main>
@@ -56,6 +56,7 @@ export default function Index() {
             ))}
         </ul> */}
       </div>
+      
     </main>
   );
 }
