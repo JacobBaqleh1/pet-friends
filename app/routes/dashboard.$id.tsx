@@ -1,9 +1,14 @@
-import { LoaderFunctionArgs } from "@remix-run/node";
+import { json, type LoaderFunctionArgs } from "@remix-run/node";
+import { useLoaderData } from "@remix-run/react";
 
-// export async function loader(){
+export async function loader({ request }: LoaderFunctionArgs) {
+  const cookieHeader = request.headers.get("Set-Cookie");
 
-// }
+  return json(cookieHeader);
+}
 export default function Component() {
+  const cookie = useLoaderData<typeof loader>();
+  console.log(cookie);
   return (
     <div>
       <h2>Animal ID PAGE!!</h2>

@@ -1,27 +1,21 @@
 import { redirect, type ActionFunctionArgs } from "@remix-run/node";
 import { Form, Link, Outlet, useActionData } from "@remix-run/react";
-import { getSession, commitSession } from "../sessions";
-// type UserInput = {
-//   zipcode: number | null;
-//   pet: string | null;
-// }
+import { commitSession, getSession } from "../cookie.server";
 
 export async function action({ request }: ActionFunctionArgs) {
   //getting the form data
   let formData = await request.formData();
-  let userInput: UserInput = {
+  let userInput = {
     zipcode: formData.get("zipcode"),
     pet: formData.get("pet"),
   };
-const session = await getSession(
-    request.headers.get("Cookie")
-  );
-  session.set("userInput", userInput);
-  
 
-  return redirect('/dashboard/q' , {
+  const session = await getSession(request.headers.get("Cookie"));
+  session.set("userInput", userInput);
+  const cookie = await commitSession(session);
+  return redirect("/dashboard/q", {
     headers: {
-      "Set-Cookie": await commitSession(session),
+      "Set-Cookie": cookie,
     },
   });
 }
@@ -36,9 +30,12 @@ export default function Component() {
       <main>
         <Form method="post" className="w-full max-w-lg">
           <div className="mb-4">
-          <label htmlFor="zipcode" className="block text-sm font-medium text-gray-700">
-      Enter your zipcode
-    </label>
+            <label
+              htmlFor="zipcode"
+              className="block text-sm font-medium text-gray-700"
+            >
+              Enter your zipcode
+            </label>
 
             <input
               type="text"
@@ -48,25 +45,42 @@ export default function Component() {
             />
           </div>
           <div>
-            <span className="block text-sm font-medium text-gray-700">Select a pet: </span>
+            <span className="block text-sm font-medium text-gray-700">
+              Select a pet:{" "}
+            </span>
             <div className="mt-2">
-          <input type="radio" id="dog" name="pet" value="dog"  className="focus:ring-indigo-500 h-4 w-4 text-indigo-600 border-gray-300" />
-          <label htmlFor="dog" className="ml-2 text-sm text-gray-700">
-        Dogs
-      </label>
-      </div>
-      <div className="mt-2">
-          <input type="radio" name="pet" value="cat" id="cat" 
-          className="focus:ring-indigo-500 h-4 w-4 text-indigo-600 border-gray-300" />
-           <label htmlFor="cat" className="ml-2 text-sm text-gray-700">
-        Cats
-      </label>
-      </div>
-      </div>
-          
-          <button type="submit" className="bg-indigo-500 text-white px-4 py-2 rounded-md">Search</button>
+              <input
+                type="radio"
+                id="dog"
+                name="pet"
+                value="dog"
+                className="focus:ring-indigo-500 h-4 w-4 text-indigo-600 border-gray-300"
+              />
+              <label htmlFor="dog" className="ml-2 text-sm text-gray-700">
+                Dogs
+              </label>
+            </div>
+            <div className="mt-2">
+              <input
+                type="radio"
+                name="pet"
+                value="cat"
+                id="cat"
+                className="focus:ring-indigo-500 h-4 w-4 text-indigo-600 border-gray-300"
+              />
+              <label htmlFor="cat" className="ml-2 text-sm text-gray-700">
+                Cats
+              </label>
+            </div>
+          </div>
+
+          <button
+            type="submit"
+            className="bg-indigo-500 text-white px-4 py-2 rounded-md"
+          >
+            Search
+          </button>
         </Form>
-        
 
         <div className="grid gap-4 sm:grid-cols-2 md:gap-6 lg:grid-cols-3 xl:grid-cols-4 xl:gap-8">
           {data?.animals ? (
