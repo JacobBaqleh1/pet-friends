@@ -1,14 +1,23 @@
-import { json, type LoaderFunctionArgs } from "@remix-run/node";
-import { useLoaderData } from "@remix-run/react";
+import { LoaderFunctionArgs, json } from "@remix-run/node";
+import { useRouteLoaderData } from "@remix-run/react";
+import { useEffect } from "react";
 
-export async function loader({ request }: LoaderFunctionArgs) {
-  const cookieHeader = request.headers.get("Set-Cookie");
 
-  return json(cookieHeader);
-}
+
 export default function Component() {
-  const cookie = useLoaderData<typeof loader>();
-  console.log(cookie);
+   const { user } = useRouteLoaderData("root");
+  useEffect(() => {
+  //fetching api data using the url params and the api token
+  const res = await fetch(
+    `https://api.petfinder.com/v2/animals?location=${}`,
+    {
+      headers: {
+        Authorization: `Bearer ${user.access_token}`,
+      },
+    }
+  );
+  const animalData = await res.json();
+},[])
   return (
     <div>
       <h2>Animal ID PAGE!!</h2>

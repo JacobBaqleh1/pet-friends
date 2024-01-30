@@ -1,34 +1,11 @@
-import { redirect, type ActionFunctionArgs } from "@remix-run/node";
 import { Form, Link, Outlet, useActionData } from "@remix-run/react";
-import { commitSession, getSession } from "../cookie.server";
-
-export async function action({ request }: ActionFunctionArgs) {
-  //getting the form data
-  let formData = await request.formData();
-  let userInput = {
-    zipcode: formData.get("zipcode"),
-    pet: formData.get("pet"),
-  };
-
-  const session = await getSession(request.headers.get("Cookie"));
-  session.set("userInput", userInput);
-  const cookie = await commitSession(session);
-  return redirect("/dashboard/q", {
-    headers: {
-      "Set-Cookie": cookie,
-    },
-  });
-}
 
 export default function Component() {
-  //retrieve action function data
-  const data = useActionData<typeof action>();
-  console.log(data?.animals);
   return (
     <>
       {" "}
       <main>
-        <Form method="post" className="w-full max-w-lg">
+        <Form method="get" action="/dashboard/q" className="w-full max-w-lg">
           <div className="mb-4">
             <label
               htmlFor="zipcode"
@@ -81,8 +58,7 @@ export default function Component() {
             Search
           </button>
         </Form>
-
-        <div className="grid gap-4 sm:grid-cols-2 md:gap-6 lg:grid-cols-3 xl:grid-cols-4 xl:gap-8">
+        {/* <div className="grid gap-4 sm:grid-cols-2 md:gap-6 lg:grid-cols-3 xl:grid-cols-4 xl:gap-8">
           {data?.animals ? (
             data?.animals.map((animal): any => (
               <div
@@ -104,7 +80,8 @@ export default function Component() {
           ) : (
             <p></p>
           )}
-        </div>
+        </div> */}
+
         <Outlet />
       </main>
     </>
@@ -123,7 +100,7 @@ export default function Component() {
 // const tokenData = await response.json();
 // //fetching api data using the form data and the api token
 // const res = await fetch(
-//   `https://api.petfinder.com/v2/animals?location=${newUser.zipcode}&type=${newUser.pet}`,
+//   `https://api.petfinder.com/v2/animals?location=${query}`,
 //   {
 //     headers: {
 //       Authorization: `Bearer ${tokenData.access_token}`,
