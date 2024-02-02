@@ -1,7 +1,7 @@
-import { Await, Link } from "@remix-run/react";
+import { Await, Link, useLoaderData } from "@remix-run/react";
 import type { LoaderFunctionArgs } from "@remix-run/node";
 import { json } from "@remix-run/node";
-import { useLoaderData } from "@remix-run/react";
+
 import { Suspense } from "react";
 
 export const loader = async ({ request }: LoaderFunctionArgs) => {
@@ -44,9 +44,7 @@ export default function Component() {
   console.log(animalData);
   return (
     <div>
-      <h2>Animal ID PAGE!!</h2>
-
-      <div>
+      <div className="max-w-7xl mx-auto">
         {" "}
         <Suspense fallback={<div>Loading...</div>}>
           <Await resolve={animalData}>

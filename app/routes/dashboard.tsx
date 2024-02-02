@@ -8,7 +8,7 @@ export default function Component() {
         <Form
           method="get"
           action="/dashboard/search"
-          className="w-full max-w-lg"
+          className=" max-w-7xl mx-auto"
         >
           <div className="mb-4">
             <label

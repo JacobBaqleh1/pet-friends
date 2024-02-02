@@ -30,11 +30,17 @@ export default function Component() {
   console.log(animalId);
   return (
     <main>
-      <div>ProfilePage</div>
       <Suspense fallback={<div>Loading...</div>}>
         <Await resolve={animalId}>
-          <img src={animalId.animal.primary_photo_cropped.small} />
-          <h2>Meet {animalId.animal.name}</h2>
+          <main>
+            <div className="max-w-7xl mx-auto">
+              <img
+                src={animalId.animal.primary_photo_cropped.small}
+                alt="animal"
+              />
+              <h2>Meet {animalId.animal.name}</h2>
+            </div>
+          </main>
         </Await>
       </Suspense>
     </main>
