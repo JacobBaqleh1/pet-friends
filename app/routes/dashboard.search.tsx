@@ -21,7 +21,7 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
   //fetching api data using the params and the api token
   const formattedDate = getFormattedDate();
   const res = await fetch(
-    `https://api.petfinder.com/v2/animals?before=${formattedDate}&location=${zipcode}&pet=${petType}`,
+    `https://api.petfinder.com/v2/animals?before=${formattedDate}&location=${zipcode}&type=${petType}`,
     {
       headers: {
         Authorization: `Bearer ${tokenData.access_token}`,
