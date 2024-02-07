@@ -28,7 +28,7 @@ export default function Component() {
                 </h1>
                 <p className="text-xl mb-12"> Ready to adopt a pet?</p>
                 <Form method="get" action="/dashboard">
-                  <button className="bg-indigo-500 text-white py-4 px-12 rounded-full hover:bg-indigo-600">
+                  <button className="bg-indigo-500 text-white py-4 px-12 rounded-full hover:bg-indigo-600 btn btn-active btn-primary">
                     Get Started
                   </button>
                 </Form>
