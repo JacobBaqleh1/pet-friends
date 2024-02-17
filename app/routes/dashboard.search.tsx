@@ -34,9 +34,9 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
 };
 
 function getFormattedDate() {
-  const oneDayAgo = new Date();
-  oneDayAgo.setDate(oneDayAgo.getDate() - 1);
-  return oneDayAgo.toISOString();
+  const twoDaysAgo = new Date();
+  twoDaysAgo.setDate(twoDaysAgo.getDate() - 2);
+  return twoDaysAgo.toISOString(); // Returns the date in ISO string format
 }
 
 export default function Component() {
@@ -49,36 +49,49 @@ export default function Component() {
         <Suspense fallback={<div>Loading...</div>}>
           <Await resolve={animalData}>
             {(animalData) => (
-              <div>
+              <div className="flex flex-wrap">
                 {animalData.animals
                   // Filter out animals without photos
                   .filter((animal) => animal.photos.length > 0)
                   .map((animal) => (
                     <div
                       key={animal.id}
-                      className="flex flex-col overflow-hidden rounded-lg border bg-white"
+                      className="w-1/2 sm:w-1/2 md:w-1/2 lg:w-1/3 xl:w-1/3 p-2"
                     >
-                      <Link
-                        className="group relative  h-48 overflow-hidden bg-gray-100 md:h-64"
-                        prefetch="intent"
-                        to={`/dashboard/${animal.id}`}
-                      >
-                        <img
-                          src={animal.primary_photo_cropped.small}
-                          alt="animal"
-                          className="absolute inset-0  object-cover object-center transition duration-2ßß group-hover:scale-110"
-                        />
-                      </Link>
-                      <div>
-                        <h2 className="mb-2 text-lg font-semibold text-gray-800">
-                          <Link
-                            to={`/dashboard/${animal.id}`}
-                            prefetch="intent"
-                            className="transition duration-100 hover:text-indigo-500 active:text-indigo-600"
-                          >
-                            {animal.name}
-                          </Link>
-                        </h2>
+                      <div className="max-w-sm rounded overflow-hidden shadow-lg">
+                        <Link
+                          className=""
+                          prefetch="intent"
+                          to={`/dashboard/${animal.id}`}
+                        >
+                          <img
+                            src={animal.primary_photo_cropped.small}
+                            alt="animal"
+                            className="w-full"
+                          />
+                        </Link>
+                        <div className="px-6 py-4">
+                          <h2 className="font-bold text-xl mb-2">
+                            <Link
+                              to={`/dashboard/${animal.id}`}
+                              prefetch="intent"
+                              className=""
+                            >
+                              {animal.name}
+                            </Link>
+                          </h2>
+                        </div>
+                        <div className="px-6 pt-4 pb-2">
+                          <span className="inline-block bg-gray-200 rounded-full px-3 py-1 text-sm font-semibold text-gray-700 mr-2 mb-2">
+                            #photography
+                          </span>
+                          <span className="inline-block bg-gray-200 rounded-full px-3 py-1 text-sm font-semibold text-gray-700 mr-2 mb-2">
+                            #travel
+                          </span>
+                          <span className="inline-block bg-gray-200 rounded-full px-3 py-1 text-sm font-semibold text-gray-700 mr-2 mb-2">
+                            #winter
+                          </span>
+                        </div>
                       </div>
                     </div>
                   ))}
