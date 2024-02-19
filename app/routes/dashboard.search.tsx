@@ -67,7 +67,7 @@ export default function Component() {
                           <img
                             src={animal.primary_photo_cropped.small}
                             alt="animal"
-                            className="w-full h-[15rem]"
+                            className="w-full h-[15rem] rounded-full"
                           />
                         </Link>
                         <div className="px-3 py-2">
@@ -83,13 +83,13 @@ export default function Component() {
                         </div>
                         <div className="px-6 pt-4 pb-2">
                           <span className="inline-block bg-gray-200 rounded-full px-3 py-1 text-sm font-semibold text-gray-700 mr-2 mb-2">
-                            #photography
+                            {animal.breeds.primary}
                           </span>
                           <span className="inline-block bg-gray-200 rounded-full px-3 py-1 text-sm font-semibold text-gray-700 mr-2 mb-2">
-                            #travel
+                            {animal.age}
                           </span>
                           <span className="inline-block bg-gray-200 rounded-full px-3 py-1 text-sm font-semibold text-gray-700 mr-2 mb-2">
-                            #winter
+                            {animal.size}
                           </span>
                         </div>
                       </div>

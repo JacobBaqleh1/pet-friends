@@ -34,11 +34,15 @@ export default function Component() {
         <Await resolve={animalId}>
           <main>
             <div className="max-w-7xl mx-auto">
-              <img
-                src={animalId.animal.primary_photo_cropped.small}
-                alt="animal"
-              />
               <h2>Meet {animalId.animal.name}</h2>
+              <div>
+                <img
+                  src={animalId.animal.primary_photo_cropped.small}
+                  alt="animal"
+                />
+              </div>
+
+              <h2>More about me</h2>
             </div>
           </main>
         </Await>
