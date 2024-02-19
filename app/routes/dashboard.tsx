@@ -19,65 +19,69 @@ export default function Component() {
             </div>
           </div>
         </div>
-
-        <Form
-          method="get"
-          action="/dashboard/search"
-          className=" max-w-7xl mx-auto"
-        >
-          <div className="mb-4">
-            <label
-              htmlFor="zipcode"
-              className="block text-sm font-medium text-gray-700"
-            >
-              Enter your zipcode
-            </label>
-
-            <input
-              type="text"
-              name="zipcode"
-              placeholder="Enter Zipcode..."
-              className="w-full border border-gray-300 rounded-lg px-4 py-2 mt-2"
-            />
-          </div>
-          <div className="">
-            <span className="block text-sm font-medium text-gray-700">
-              Select a pet:{" "}
-            </span>
-            <div className="mt-2">
-              <input
-                type="radio"
-                id="dog"
-                name="pet"
-                value="dog"
-                className="focus:ring-indigo-500 h-4 w-4 text-indigo-600 border-gray-300"
-              />
-              <label htmlFor="dog" className="ml-2 text-sm text-gray-700">
-                Dogs
-              </label>
-            </div>
-            <div className="mt-2">
-              <input
-                type="radio"
-                name="pet"
-                value="cat"
-                id="cat"
-                className="focus:ring-indigo-500 h-4 w-4 text-indigo-600 border-gray-300"
-              />
-              <label htmlFor="cat" className="ml-2 text-sm text-gray-700">
-                Cats
-              </label>
-            </div>
-          </div>
-          {/* <Filter /> */}
-
-          <button
-            type="submit"
-            className="bg-indigo-500 text-white px-4 py-2 btn btn-active btn-primary"
+        <div className=" flex justify-center ">
+          <Form
+            method="get"
+            action="/dashboard/search"
+            className="w-full max-w-lg bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4"
           >
-            Search
-          </button>
-        </Form>
+            <div className="mb-4">
+              <label
+                htmlFor="zipcode"
+                className="block text-gray-700 text-sm font-bold mb-2"
+              >
+                Enter your zipcode
+              </label>
+
+              <input
+                type="text"
+                name="zipcode"
+                placeholder="Enter Zipcode..."
+                className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+              />
+            </div>
+            <div>
+              <span className=" block text-sm font-medium text-gray-700">
+                Select a pet:{" "}
+              </span>
+              <div className="flex">
+                <div className="m-4 ">
+                  <input
+                    type="radio"
+                    id="dog"
+                    name="pet"
+                    value="dog"
+                    className="radio focus:ring-indigo-500 h-4 w-4 text-indigo-600 border-gray-300"
+                  />
+                  <label htmlFor="dog" className="ml-2 text-sm text-gray-700">
+                    Dogs
+                  </label>
+                </div>
+                <div className="m-4 ml-10 ">
+                  <input
+                    type="radio"
+                    name="pet"
+                    value="cat"
+                    id="cat"
+                    className="radio focus:ring-indigo-500 h-4 w-4 text-indigo-600 border-gray-300"
+                  />
+                  <label htmlFor="cat" className="ml-2 text-sm text-gray-700">
+                    Cats
+                  </label>
+                </div>
+              </div>
+            </div>
+            {/* <Filter /> */}
+            <div className="flex justify-center">
+              <button
+                type="submit"
+                className="  bg-indigo-500 text-white px-4 py-2 btn btn-active btn-primary w-[20rem]"
+              >
+                Search
+              </button>
+            </div>
+          </Form>
+        </div>
 
         <Outlet />
       </main>

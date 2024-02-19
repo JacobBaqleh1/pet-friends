@@ -34,9 +34,9 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
 };
 
 function getFormattedDate() {
-  const twoDaysAgo = new Date();
-  twoDaysAgo.setDate(twoDaysAgo.getDate() - 2);
-  return twoDaysAgo.toISOString(); // Returns the date in ISO string format
+  const threeDaysAgo = new Date();
+  threeDaysAgo.setDate(threeDaysAgo.getDate() - 3);
+  return threeDaysAgo.toISOString(); // Returns the date in ISO string format
 }
 
 export default function Component() {
@@ -56,9 +56,9 @@ export default function Component() {
                   .map((animal) => (
                     <div
                       key={animal.id}
-                      className="w-1/2 sm:w-1/2 md:w-1/2 lg:w-1/3 xl:w-1/3 p-2"
+                      className="w-1/2 h-[30rem] sm:w-1/2 md:w-1/2 lg:w-1/3 xl:w-1/3 p-2 mb-20 "
                     >
-                      <div className="max-w-sm rounded overflow-hidden shadow-lg">
+                      <div className="max-w-sm rounded overflow-hidden shadow-lg ">
                         <Link
                           className=""
                           prefetch="intent"
@@ -67,10 +67,10 @@ export default function Component() {
                           <img
                             src={animal.primary_photo_cropped.small}
                             alt="animal"
-                            className="w-full"
+                            className="w-full h-[15rem]"
                           />
                         </Link>
-                        <div className="px-6 py-4">
+                        <div className="px-3 py-2">
                           <h2 className="font-bold text-xl mb-2">
                             <Link
                               to={`/dashboard/${animal.id}`}
