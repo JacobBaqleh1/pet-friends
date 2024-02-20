@@ -34,15 +34,50 @@ export default function Component() {
         <Await resolve={animalId}>
           <main>
             <div className="max-w-7xl mx-auto">
-              <h2>Meet {animalId.animal.name}</h2>
-              <div>
-                <img
-                  src={animalId.animal.primary_photo_cropped.small}
-                  alt="animal"
-                />
-              </div>
+              <div className=" flex justify-center relative m-5 mt-20 border border-red-500">
+                <div className="absolute -top-14 ">
+                  <img
+                    src={animalId.animal.primary_photo_cropped.small}
+                    alt="animal"
+                    className="rounded-full w-32 h-32 mx-auto "
+                  />
+                </div>
+                <div className="mt-[20rem]">
+                  <div
+                    id="aboutMe"
+                    className="cursor-pointer"
+                    onClick={() => {
+                      document
+                        .getElementById("aboutMeDiv")
+                        .classList.remove("hidden");
+                      document
+                        .getElementById("galleryDiv")
+                        .classList.add("hidden");
+                    }}
+                  >
+                    About Me
+                  </div>
+                  <div
+                    id="gallery"
+                    className="mt-2 cursor-pointer"
+                    onClick={() => {
+                      document
+                        .getElementById("aboutMeDiv")
+                        .classList.add("hidden");
+                      document
+                        .getElementById("galleryDiv")
+                        .classList.remove("hidden");
+                    }}
+                  >
+                    Galler
+                  </div>
+                  <div id="aboutMeDiv">About Me Content</div>
 
-              <h2>More about me</h2>
+                  <div id="galleryDiv" className="hidden">
+                    Gallery Content
+                  </div>
+                </div>
+              </div>
             </div>
           </main>
         </Await>
