@@ -23,7 +23,7 @@ export default function Component() {
           <Form
             method="get"
             action="/dashboard/search"
-            className="w-full max-w-lg bg-white shadow-md rounded px-8 pt-6 pb-8 m-4"
+            className="w-full max-w-lg bg-white shadow-2xl rounded px-8 pt-6 pb-8 m-4 border-2  border-gray-500"
           >
             <div className="mb-4">
               <label

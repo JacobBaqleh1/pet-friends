@@ -44,7 +44,7 @@ export default function Component() {
   console.log(animalData);
   return (
     <div>
-      <div className="max-w-7xl mx-auto">
+      <div className="max-w-7xl mx-auto ">
         {" "}
         <Suspense fallback={<div>Loading...</div>}>
           <Await resolve={animalData}>
