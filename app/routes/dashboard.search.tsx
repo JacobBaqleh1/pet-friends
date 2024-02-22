@@ -3,6 +3,19 @@ import type { LoaderFunctionArgs } from "@remix-run/node";
 import { json } from "@remix-run/node";
 
 import { Suspense } from "react";
+interface Animal {
+  id: number;
+  name: string;
+  photos: string[];
+  primary_photo_cropped: {
+    small: string;
+  };
+  breeds: {
+    primary: string;
+  };
+  age: string;
+  size: string;
+}
 
 export const loader = async ({ request }: LoaderFunctionArgs) => {
   let { searchParams } = new URL(request.url);
@@ -52,8 +65,11 @@ export default function Component() {
               <div className="flex flex-wrap">
                 {animalData.animals
                   // Filter out animals without photos
-                  .filter((animal) => animal.photos.length > 0)
-                  .map((animal) => (
+                  .filter(
+                    (animal: Animal) =>
+                      animal.photos.length > 0 && animal.primary_photo_cropped
+                  )
+                  .map((animal: Animal) => (
                     <div
                       key={animal.id}
                       className="w-1/2 h-[30rem] sm:w-1/2 md:w-1/2 lg:w-1/3 xl:w-1/3 p-2 mb-20 "
@@ -65,7 +81,11 @@ export default function Component() {
                           to={`/dashboard/${animal.id}`}
                         >
                           <img
-                            src={animal.primary_photo_cropped.small}
+                            src={
+                              animal.primary_photo_cropped
+                                ? animal.primary_photo_cropped.small
+                                : ""
+                            }
                             alt="animal"
                             className="w-full h-[15rem] rounded-full"
                           />

@@ -37,7 +37,11 @@ export default function Component() {
               <div className=" flex justify-center relative m-5 mt-20 border border-red-500">
                 <div className="absolute -top-14 ">
                   <img
-                    src={animalId.animal.primary_photo_cropped.small}
+                    src={
+                      animalId.animal.primary_photo_cropped
+                        ? animalId.animal.primary_photo_cropped.small
+                        : ""
+                    }
                     alt="animal"
                     className="rounded-full w-32 h-32 mx-auto "
                   />
