@@ -46,36 +46,63 @@ export default function Component() {
                     className="rounded-full w-32 h-32 mx-auto "
                   />
                 </div>
-                <div className="mt-[20rem]">
-                  <div
-                    id="aboutMe"
-                    className="cursor-pointer"
-                    onClick={() => {
-                      document
-                        .getElementById("aboutMeDiv")
-                        .classList.remove("hidden");
-                      document
-                        .getElementById("galleryDiv")
-                        .classList.add("hidden");
-                    }}
-                  >
-                    About Me
+                {/* Content for animal */}
+                <div className="mt-[5rem]">
+                  {/* About me and Gallery div */}
+                  <div className="flex flex-row justify-center">
+                    <div
+                      id="aboutMe"
+                      className="cursor-pointer"
+                      onClick={() => {
+                        document
+                          .getElementById("aboutMeDiv")
+                          .classList.remove("hidden");
+                        document
+                          .getElementById("galleryDiv")
+                          .classList.add("hidden");
+                      }}
+                    >
+                      About Me /
+                    </div>
+                    <div
+                      id="gallery"
+                      className=" cursor-pointer"
+                      onClick={() => {
+                        document
+                          .getElementById("aboutMeDiv")
+                          .classList.add("hidden");
+                        document
+                          .getElementById("galleryDiv")
+                          .classList.remove("hidden");
+                      }}
+                    >
+                      Gallery
+                    </div>
                   </div>
-                  <div
-                    id="gallery"
-                    className="mt-2 cursor-pointer"
-                    onClick={() => {
-                      document
-                        .getElementById("aboutMeDiv")
-                        .classList.add("hidden");
-                      document
-                        .getElementById("galleryDiv")
-                        .classList.remove("hidden");
-                    }}
-                  >
-                    Galler
+                  <div id="aboutMeDiv">
+                    {/* About Me Content */}
+                    <div className="overflow-x-auto">
+                      <table className="table">
+                        <tbody>
+                          {/* row 1 */}
+                          <tr>
+                            <td>Cy Ganderton</td>
+                            <td>Blue</td>
+                          </tr>
+                          {/* row 2 */}
+                          <tr>
+                            <td>Hart Hagerty</td>
+                            <td>Desktop Support Technician</td>
+                          </tr>
+                          {/* row 3 */}
+                          <tr>
+                            <td>Brice Swyre</td>
+                            <td>Tax Accountant</td>
+                          </tr>
+                        </tbody>
+                      </table>
+                    </div>
                   </div>
-                  <div id="aboutMeDiv">About Me Content</div>
 
                   <div id="galleryDiv" className="hidden">
                     Gallery Content
