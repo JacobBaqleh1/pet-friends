@@ -1,6 +1,7 @@
-import type { MetaFunction } from "@remix-run/node";
+import type { MetaFunction, LinksFunction } from "@remix-run/node";
 import { Form } from "@remix-run/react";
-
+import { Image } from "@unpic/react";
+import dogImage from "public/dog-image.jpg";
 export const meta: MetaFunction = () => {
   return [
     { title: "New Remix App" },
@@ -8,34 +9,49 @@ export const meta: MetaFunction = () => {
   ];
 };
 
+export const links: LinksFunction = () => [
+  { rel: "preconnect", href: "https://fonts.googleapis.com" },
+  {
+    rel: "preconnect",
+    href: "https://fonts.gstatic.com",
+    crossorigin: "anonymous",
+  },
+  {
+    href: "https://fonts.googleapis.com/css2?family=Protest+Riot&display=swap",
+    rel: "stylesheet",
+  },
+];
+
 export default function Component() {
   return (
-    <main className="bg-gray-800  min-h-screen">
+    <main>
       {" "}
-      <div className="flex items-center">
-        <section
-          className="bg-cover bg-center py-32 max-w-7xl mx-auto"
-          style={{
-            backgroundImage:
-              "url('https://images.unsplash.com/photo-1557495235-340eb888a9fb?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mnx8ZG9nJTIwYW5kJTIwaHVtYW58ZW58MHx8MHx8fDA%3D')",
-          }}
-        >
-          <div className="container mx-auto text-left text-white">
-            <div className="flex items-center">
-              <div className="w-1/2  ">
-                <h1 className="text-5xl font-medium mb-6">
-                  Welcome to Pet friends
+      <div>
+        <div className="container ">
+          <div className="flex justify-center  ">
+            <div className="w-full text-center">
+              <div className="w-2/3 mx-auto">
+                <h1
+                  style={{ fontFamily: "Protest Riot" }}
+                  className="text-5xl font-medium mb-6 "
+                >
+                  Make Your New Friend
                 </h1>
-                <p className="text-xl mb-12"> Ready to adopt a pet?</p>
-                <Form method="get" action="/dashboard">
-                  <button className="bg-indigo-500 text-white py-4 px-12 rounded-full hover:bg-indigo-600 btn btn-active btn-primary">
-                    Get Started
-                  </button>
-                </Form>
               </div>
+              <p className="text-xl mb-12 ">
+                {" "}
+                We have the cutest pets available. All waiting to make you their
+                new best friend.
+              </p>
+              <Form method="get" action="/dashboard">
+                <button className="bg-indigo-500 text-white py-4 px-12 rounded-full hover:bg-indigo-600 btn btn-active btn-primary">
+                  Get Started
+                </button>
+              </Form>
             </div>
           </div>
-        </section>
+        </div>
+        <Image alt="Logo" src={dogImage} layout="constrained" />
       </div>
     </main>
   );

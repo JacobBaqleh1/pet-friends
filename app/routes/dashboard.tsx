@@ -1,9 +1,10 @@
 import { Form, Outlet } from "@remix-run/react";
+import Navbar from "../components/navbar";
 //import Filter from "../components/filter";
 export default function Component() {
   return (
     <>
-      {" "}
+      <Navbar />{" "}
       <main>
         <div className="relative mx-auto bg-white bg-opacity-20 bg-cover bg-center md:max-w-screen-lg ">
           <img
