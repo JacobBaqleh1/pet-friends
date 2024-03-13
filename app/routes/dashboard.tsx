@@ -1,21 +1,18 @@
 import { Form, Outlet } from "@remix-run/react";
 import Navbar from "../components/navbar";
+
 //import Filter from "../components/filter";
+
 export default function Component() {
   return (
     <>
       <Navbar />{" "}
       <main>
-        <div className="relative mx-auto bg-white bg-opacity-20 bg-cover bg-center md:max-w-screen-lg ">
-          <img
-            alt="background"
-            className="absolute h-full w-full object-cover"
-            src="https://images.unsplash.com/photo-1509205477838-a534e43a849f?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MzB8fGNhdCUyMG9uJTIwcmlnaHR8ZW58MHx8MHx8fDA%3D"
-          />
-          <div className="text-white lg:w-1/2">
+        <div className="relative mx-auto  md:max-w-screen-lg ">
+          <div className=" lg:w-1/2">
             <div className="pt-16  p-5 opacity-95  lg:p-12">
-              <h2 className="font-serif text-5xl font-bold">
-                Checkout nearby pets today!
+              <h2 className="font-customFont text-5xl ">
+                Look for nearby pets today!
               </h2>
             </div>
           </div>

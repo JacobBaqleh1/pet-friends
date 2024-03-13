@@ -9,19 +9,6 @@ export const meta: MetaFunction = () => {
   ];
 };
 
-export const links: LinksFunction = () => [
-  { rel: "preconnect", href: "https://fonts.googleapis.com" },
-  {
-    rel: "preconnect",
-    href: "https://fonts.gstatic.com",
-    crossorigin: "anonymous",
-  },
-  {
-    href: "https://fonts.googleapis.com/css2?family=Protest+Riot&display=swap",
-    rel: "stylesheet",
-  },
-];
-
 export default function Component() {
   return (
     <main>
@@ -31,10 +18,7 @@ export default function Component() {
           <div className="flex justify-center  ">
             <div className="w-full text-center">
               <div className="w-2/3 mx-auto">
-                <h1
-                  style={{ fontFamily: "Protest Riot" }}
-                  className="text-5xl font-medium mb-6 "
-                >
+                <h1 className="text-5xl font-medium mb-6 font-customFont  ">
                   Make Your New Friend
                 </h1>
               </div>
