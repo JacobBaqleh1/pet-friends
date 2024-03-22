@@ -2,6 +2,7 @@ import { LoaderFunctionArgs, json } from "@remix-run/node";
 import { Await, useLoaderData } from "@remix-run/react";
 import { Suspense } from "react";
 import checkMark from "public/checkMark.svg";
+import pawPrint from "public/pawPrint.svg";
 
 export const loader = async ({ params }: LoaderFunctionArgs) => {
   let id = params.slug;
@@ -35,8 +36,8 @@ export default function Component() {
         <Await resolve={animalId}>
           <main>
             <div className="max-w-7xl mx-auto">
-              <div className=" flex justify-center relative m-5 mt-20 border border-red-500">
-                <div className="absolute -top-14 ">
+              <div className="relative m-5 mt-20 border border-red-500">
+                <div className="flex justify-center -top-16 ">
                   <img
                     src={
                       animalId.animal.primary_photo_cropped
@@ -48,7 +49,7 @@ export default function Component() {
                   />
                 </div>
                 {/* Content for animal */}
-                <div className="mt-[5rem]">
+                <div className="mt-[1rem]">
                   {/* About me and Gallery div */}
                   <div className="flex flex-row justify-center">
                     <div
@@ -83,8 +84,11 @@ export default function Component() {
                   <div id="aboutMeDiv">
                     {/* About Me Content */}
                     <div className="overflow-x-auto">
-                      <h2>{animalId.animal.name}</h2>
-                      <h3>({animalId.animal.breeds.primary})</h3>
+                      <h2 className="font-bold">{animalId.animal.name}</h2>
+                      <h3 className="flex items-center">
+                        <img src={pawPrint} alt="paw" className="w-4 h-4" />
+                        {animalId.animal.breeds.primary}
+                      </h3>
                       {animalId.animal.attributes.shots_current ? (
                         <div className="flex items-center">
                           <img
@@ -92,7 +96,7 @@ export default function Component() {
                             alt="check mark"
                             className="w-6 h-6"
                           />
-                          <p className="ml-2">Shots Current</p>
+                          <p className="ml-2">Vaccinated</p>
                         </div>
                       ) : (
                         ""
@@ -104,7 +108,7 @@ export default function Component() {
                             alt="check mark"
                             className="w-6 h-6"
                           />
-                          <p className="ml-2">Spayed/Neutered</p>
+                          <p className="ml-2">Spayed</p>
                         </div>
                       ) : (
                         ""
@@ -134,25 +138,10 @@ export default function Component() {
                         ""
                       )}
 
-                      <table className="table">
-                        <tbody>
-                          {/* row 1 */}
-                          <tr>
-                            <td>Cy Ganderton</td>
-                            <td>Blue</td>
-                          </tr>
-                          {/* row 2 */}
-                          <tr>
-                            <td>Hart Hagerty</td>
-                            <td>Desktop Support Technician</td>
-                          </tr>
-                          {/* row 3 */}
-                          <tr>
-                            <td>Brice Swyre</td>
-                            <td>Tax Accountant</td>
-                          </tr>
-                        </tbody>
-                      </table>
+                      <div className="border inline-block p-2">
+                        <p>Age</p>
+                        <p className="font-bold">{animalId.animal.age}</p>
+                      </div>
                     </div>
                   </div>
 
