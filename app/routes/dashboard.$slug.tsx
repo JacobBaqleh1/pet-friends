@@ -1,6 +1,7 @@
 import { LoaderFunctionArgs, json } from "@remix-run/node";
 import { Await, useLoaderData } from "@remix-run/react";
 import { Suspense } from "react";
+import checkMark from "public/checkMark.svg";
 
 export const loader = async ({ params }: LoaderFunctionArgs) => {
   let id = params.slug;
@@ -82,6 +83,57 @@ export default function Component() {
                   <div id="aboutMeDiv">
                     {/* About Me Content */}
                     <div className="overflow-x-auto">
+                      <h2>{animalId.animal.name}</h2>
+                      <h3>({animalId.animal.breeds.primary})</h3>
+                      {animalId.animal.attributes.shots_current ? (
+                        <div className="flex items-center">
+                          <img
+                            src={checkMark}
+                            alt="check mark"
+                            className="w-6 h-6"
+                          />
+                          <p className="ml-2">Shots Current</p>
+                        </div>
+                      ) : (
+                        ""
+                      )}
+                      {animalId.animal.attributes.spayed_neutered ? (
+                        <div className="flex items-center">
+                          <img
+                            src={checkMark}
+                            alt="check mark"
+                            className="w-6 h-6"
+                          />
+                          <p className="ml-2">Spayed/Neutered</p>
+                        </div>
+                      ) : (
+                        ""
+                      )}
+                      {animalId.animal.attributes.house_trained ? (
+                        <div className="flex items-center">
+                          <img
+                            src={checkMark}
+                            alt="check mark"
+                            className="w-6 h-6"
+                          />
+                          <p className="ml-2">House Trained</p>
+                        </div>
+                      ) : (
+                        ""
+                      )}
+                      {animalId.animal.attributes.special_needs ? (
+                        <div className="flex items-center">
+                          <img
+                            src={checkMark}
+                            alt="check mark"
+                            className="w-6 h-6"
+                          />
+                          <p className="ml-2">Special Needs</p>
+                        </div>
+                      ) : (
+                        ""
+                      )}
+
                       <table className="table">
                         <tbody>
                           {/* row 1 */}
