@@ -3,7 +3,7 @@ import { Await, useLoaderData } from "@remix-run/react";
 import { Suspense } from "react";
 import checkMark from "public/checkMark.svg";
 import pawPrint from "public/pawPrint.svg";
-
+import pinDrop from "public/pinDrop.svg";
 export const loader = async ({ params }: LoaderFunctionArgs) => {
   let id = params.slug;
   //fetching api token from the petfinder website
@@ -30,6 +30,16 @@ export const loader = async ({ params }: LoaderFunctionArgs) => {
 export default function Component() {
   const { animalId } = useLoaderData<typeof loader>();
   console.log(animalId);
+  // Contact Pop up animation
+  function displayCard() {
+    let cardPopup = document.getElementById("cardPopup");
+    cardPopup.style.display = "block";
+  }
+
+  function closeCard() {
+    let cardPopup = document.getElementById("cardPopup");
+    cardPopup.style.display = "none";
+  }
   return (
     <main>
       <Suspense fallback={<div>Loading...</div>}>
@@ -89,6 +99,11 @@ export default function Component() {
                         <img src={pawPrint} alt="paw" className="w-4 h-4" />
                         {animalId.animal.breeds.primary}
                       </h3>
+                      <h3 className="flex items-center">
+                        <img className="w-4 h-4" src={pinDrop} alt="location" />
+                        {animalId.animal.contact.address.city},
+                        {animalId.animal.contact.address.state}
+                      </h3>
                       {animalId.animal.attributes.shots_current ? (
                         <div className="flex items-center">
                           <img
@@ -137,10 +152,19 @@ export default function Component() {
                       ) : (
                         ""
                       )}
-
-                      <div className="border inline-block p-2">
-                        <p>Age</p>
-                        <p className="font-bold">{animalId.animal.age}</p>
+                      <div className="flex justify-around">
+                        <div className="border inline-block p-2">
+                          <p>Age</p>
+                          <p className="font-bold">{animalId.animal.age}</p>
+                        </div>
+                        <div className="border inline-block p-2">
+                          <p>Gender </p>
+                          <p className="font-bold">{animalId.animal.gender}</p>
+                        </div>
+                        <div className="border inline-block p-2">
+                          <p>Size</p>
+                          <p className="font-bold">{animalId.animal.size}</p>
+                        </div>
                       </div>
                     </div>
                   </div>
@@ -148,6 +172,43 @@ export default function Component() {
                   <div id="galleryDiv" className="hidden">
                     Gallery Content
                   </div>
+                </div>
+                <div id="cardPopup" className="hidden">
+                  <div className="fixed top-0 left-0 w-full h-full flex items-center justify-center bg-gray-900 bg-opacity-50 z-50">
+                    <div className="bg-white p-8 rounded-lg shadow-md">
+                      <div className="flex justify-end">
+                        <button
+                          onClick={closeCard}
+                          className="btn btn-circle btn-outline "
+                        >
+                          <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            className="h-6 w-6"
+                            fill="none"
+                            viewBox="0 0 24 24"
+                            stroke="currentColor"
+                          >
+                            <path
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                              strokeWidth="2"
+                              d="M6 18L18 6M6 6l12 12"
+                            />
+                          </svg>
+                        </button>
+                      </div>
+                      <h2>Adoption Card</h2>
+                      <p>Details</p>
+                    </div>
+                  </div>
+                </div>
+                <div className="fixed bottom-4 right-4">
+                  <button
+                    onClick={displayCard}
+                    className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-full shadow-md focus:outline-none focus:shadow-outline sticky-button"
+                  >
+                    Adopt {animalId.animal.name}
+                  </button>
                 </div>
               </div>
             </div>
