@@ -94,64 +94,68 @@ export default function Component() {
                   <div id="aboutMeDiv">
                     {/* About Me Content */}
                     <div className="overflow-x-auto">
-                      <h2 className="font-bold">{animalId.animal.name}</h2>
-                      <h3 className="flex items-center">
+                      <h2 className="font-semibold text-xl ml-4">
+                        {animalId.animal.name}
+                      </h2>
+                      <h3 className="flex items-center ml-4">
                         <img src={pawPrint} alt="paw" className="w-4 h-4" />
                         {animalId.animal.breeds.primary}
                       </h3>
-                      <h3 className="flex items-center">
+                      <h3 className="flex items-center ml-4">
                         <img className="w-4 h-4" src={pinDrop} alt="location" />
                         {animalId.animal.contact.address.city},
                         {animalId.animal.contact.address.state}
                       </h3>
-                      {animalId.animal.attributes.shots_current ? (
-                        <div className="flex items-center">
-                          <img
-                            src={checkMark}
-                            alt="check mark"
-                            className="w-6 h-6"
-                          />
-                          <p className="ml-2">Vaccinated</p>
-                        </div>
-                      ) : (
-                        ""
-                      )}
-                      {animalId.animal.attributes.spayed_neutered ? (
-                        <div className="flex items-center">
-                          <img
-                            src={checkMark}
-                            alt="check mark"
-                            className="w-6 h-6"
-                          />
-                          <p className="ml-2">Spayed</p>
-                        </div>
-                      ) : (
-                        ""
-                      )}
-                      {animalId.animal.attributes.house_trained ? (
-                        <div className="flex items-center">
-                          <img
-                            src={checkMark}
-                            alt="check mark"
-                            className="w-6 h-6"
-                          />
-                          <p className="ml-2">House Trained</p>
-                        </div>
-                      ) : (
-                        ""
-                      )}
-                      {animalId.animal.attributes.special_needs ? (
-                        <div className="flex items-center">
-                          <img
-                            src={checkMark}
-                            alt="check mark"
-                            className="w-6 h-6"
-                          />
-                          <p className="ml-2">Special Needs</p>
-                        </div>
-                      ) : (
-                        ""
-                      )}
+                      <div className="">
+                        {animalId.animal.attributes.shots_current ? (
+                          <div className="flex pl-[8rem] ">
+                            <img
+                              src={checkMark}
+                              alt="check mark"
+                              className="w-6 h-6"
+                            />
+                            <p className="ml-2">Vaccinated</p>
+                          </div>
+                        ) : (
+                          ""
+                        )}
+                        {animalId.animal.attributes.spayed_neutered ? (
+                          <div className="flex pl-[8rem] ">
+                            <img
+                              src={checkMark}
+                              alt="check mark"
+                              className="w-6 h-6"
+                            />
+                            <p className="ml-2">Spayed</p>
+                          </div>
+                        ) : (
+                          ""
+                        )}
+                        {animalId.animal.attributes.house_trained ? (
+                          <div className="flex pl-[8rem]">
+                            <img
+                              src={checkMark}
+                              alt="check mark"
+                              className="w-6 h-6"
+                            />
+                            <p className="ml-2">House Trained</p>
+                          </div>
+                        ) : (
+                          ""
+                        )}
+                        {animalId.animal.attributes.special_needs ? (
+                          <div className="flex pl-[8rem]">
+                            <img
+                              src={checkMark}
+                              alt="check mark"
+                              className="w-6 h-6"
+                            />
+                            <p className="ml-2">Special Needs</p>
+                          </div>
+                        ) : (
+                          ""
+                        )}
+                      </div>
                       <div className="flex justify-around">
                         <div className="border inline-block p-2">
                           <p>Age</p>
