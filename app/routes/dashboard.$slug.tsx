@@ -97,15 +97,21 @@ export default function Component() {
                       <h2 className="font-semibold text-xl ml-4">
                         {animalId.animal.name}
                       </h2>
-                      <h3 className="flex items-center ml-4">
-                        <img src={pawPrint} alt="paw" className="w-4 h-4" />
-                        {animalId.animal.breeds.primary}
-                      </h3>
-                      <h3 className="flex items-center ml-4">
-                        <img className="w-4 h-4" src={pinDrop} alt="location" />
-                        {animalId.animal.contact.address.city},
-                        {animalId.animal.contact.address.state}
-                      </h3>
+                      <div className="flex ">
+                        <h3 className="flex items-center ml-4">
+                          <img src={pawPrint} alt="paw" className="w-4 h-4" />
+                          {animalId.animal.breeds.primary}
+                        </h3>
+                        <h3 className="flex items-center ml-4">
+                          <img
+                            className="w-4 h-4"
+                            src={pinDrop}
+                            alt="location"
+                          />
+                          {animalId.animal.contact.address.city},
+                          {animalId.animal.contact.address.state}
+                        </h3>
+                      </div>
                       <div className="">
                         {animalId.animal.attributes.shots_current ? (
                           <div className="flex pl-[8rem] ">
