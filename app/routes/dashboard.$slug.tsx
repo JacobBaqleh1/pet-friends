@@ -93,16 +93,16 @@ export default function Component() {
                   </div>
                   <div id="aboutMeDiv">
                     {/* About Me Content */}
-                    <div className="overflow-x-auto">
-                      <h2 className="font-semibold text-xl ml-4">
+                    <div className="overflow-x-auto border-t-2">
+                      <h2 className="font-semibold text-2xl ml-4 mt-4">
                         {animalId.animal.name}
                       </h2>
-                      <div className="flex ">
+                      <div className="flex justify-between mt-4 text-lg ">
                         <h3 className="flex items-center ml-4">
                           <img src={pawPrint} alt="paw" className="w-4 h-4" />
                           {animalId.animal.breeds.primary}
                         </h3>
-                        <h3 className="flex items-center ml-4">
+                        <h3 className="flex items-center mr-14">
                           <img
                             className="w-4 h-4"
                             src={pinDrop}
@@ -112,7 +112,7 @@ export default function Component() {
                           {animalId.animal.contact.address.state}
                         </h3>
                       </div>
-                      <div className="">
+                      <div className="mt-4">
                         {animalId.animal.attributes.shots_current ? (
                           <div className="flex pl-[8rem] ">
                             <img
@@ -162,25 +162,35 @@ export default function Component() {
                           ""
                         )}
                       </div>
-                      <div className="flex justify-around">
-                        <div className="border inline-block p-2">
-                          <p>Age</p>
+                      <div className="flex justify-around mt-4">
+                        <div className="border-l-4 border-purple-500 inline-block p-2">
+                          <p className="text-sm">Age</p>
                           <p className="font-bold">{animalId.animal.age}</p>
                         </div>
-                        <div className="border inline-block p-2">
-                          <p>Gender </p>
+                        <div className="border-l-4 border-purple-500 inline-block p-2">
+                          <p className="text-sm">Gender </p>
                           <p className="font-bold">{animalId.animal.gender}</p>
                         </div>
-                        <div className="border inline-block p-2">
-                          <p>Size</p>
+                        <div className="border-l-4 border-purple-500 inline-block p-2">
+                          <p className="text-sm">Size</p>
                           <p className="font-bold">{animalId.animal.size}</p>
                         </div>
                       </div>
+                      {/* Here is going to be the organixation info */}
+                      <div></div>
                     </div>
                   </div>
 
                   <div id="galleryDiv" className="hidden">
                     Gallery Content
+                  </div>
+                  <div className="mt-6 flex justify-center  ">
+                    <button
+                      onClick={displayCard}
+                      className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-full shadow-md focus:outline-none focus:shadow-outline "
+                    >
+                      Adopt {animalId.animal.name}
+                    </button>
                   </div>
                 </div>
                 <div id="cardPopup" className="hidden">
@@ -211,14 +221,6 @@ export default function Component() {
                       <p>Details</p>
                     </div>
                   </div>
-                </div>
-                <div className="fixed bottom-4 right-4">
-                  <button
-                    onClick={displayCard}
-                    className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-full shadow-md focus:outline-none focus:shadow-outline sticky-button"
-                  >
-                    Adopt {animalId.animal.name}
-                  </button>
                 </div>
               </div>
             </div>

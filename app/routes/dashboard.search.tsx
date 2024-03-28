@@ -17,53 +17,65 @@ interface Animal {
   size: string;
 }
 
-export const loader = async ({ request }: LoaderFunctionArgs) => {
+export async function loader({ request }: LoaderFunctionArgs) {
   let { searchParams } = new URL(request.url);
   let petType = searchParams.get("pet");
   let zipcode = searchParams.get("zipcode");
-  //fetching api token from the petfinder website
-  const response = await fetch("https://api.petfinder.com/v2/oauth2/token", {
-    method: "POST",
-    body: new URLSearchParams({
-      grant_type: "client_credentials",
-      client_id: "0b5CWcWxxaW3fXPw7Lh2p0qMX9fpaYpOctVBLwbT3V4q2ift7I",
-      client_secret: "un5wi6EsUOmgy0qwvsfHTofWlXL7Pboo780HRHFS",
-    }),
-  });
-  const tokenData = await response.json();
-  //fetching api data using the params and the api token
-  const formattedDate = getFormattedDate();
-  const res = await fetch(
-    `https://api.petfinder.com/v2/animals?before=${formattedDate}&location=${zipcode}&type=${petType}`,
+
+  // Fetch the API token
+  const tokenResponse = await fetch(
+    "https://api.petfinder.com/v2/oauth2/token",
     {
-      headers: {
-        Authorization: `Bearer ${tokenData.access_token}`,
-      },
+      method: "POST",
+      body: new URLSearchParams({
+        grant_type: "client_credentials",
+        client_id: "0b5CWcWxxaW3fXPw7Lh2p0qMX9fpaYpOctVBLwbT3V4q2ift7I", // Use environment variables
+        client_secret: "un5wi6EsUOmgy0qwvsfHTofWlXL7Pboo780HRHFS",
+      }),
     }
   );
-  const animalData = await res.json();
+  const tokenData = await tokenResponse.json();
 
-  return json({ animalData });
-};
+  // Fetch animals data
+  const formattedDate = getFormattedDate();
+  const urls = [
+    `https://api.petfinder.com/v2/animals?before=${formattedDate}&location=${zipcode}&type=${petType}&page=1`,
+    `https://api.petfinder.com/v2/animals?before=${formattedDate}&location=${zipcode}&type=${petType}&page=2`,
+  ];
+
+  const fetchPromises = urls.map((url) =>
+    fetch(url, {
+      headers: { Authorization: `Bearer ${tokenData.access_token}` },
+    })
+  );
+  const responses = await Promise.all(fetchPromises);
+  const animalsPages = await Promise.all(
+    responses.map((response) => response.json())
+  );
+
+  // Combine and return animal data
+  const combinedAnimals = animalsPages.flatMap((page) => page.animals);
+  return json(combinedAnimals);
+}
 
 function getFormattedDate() {
   const threeDaysAgo = new Date();
   threeDaysAgo.setDate(threeDaysAgo.getDate() - 3);
-  return threeDaysAgo.toISOString(); // Returns the date in ISO string format
+  return threeDaysAgo.toISOString();
 }
 
 export default function Component() {
-  const { animalData } = useLoaderData<typeof loader>();
-  console.log(animalData);
+  const animals = useLoaderData<Animal[]>();
+  console.log(animals);
   return (
     <div>
       <div className="max-w-7xl mx-auto ">
         {" "}
         <Suspense fallback={<div>Loading...</div>}>
-          <Await resolve={animalData}>
-            {(animalData) => (
+          <Await resolve={animals}>
+            {(animals) => (
               <div className="flex flex-wrap">
-                {animalData.animals
+                {animals
                   // Filter out animals without photos
                   .filter(
                     (animal: Animal) =>
