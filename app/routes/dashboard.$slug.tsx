@@ -4,6 +4,7 @@ import { Suspense } from "react";
 import checkMark from "public/checkMark.svg";
 import pawPrint from "public/pawPrint.svg";
 import pinDrop from "public/pinDrop.svg";
+
 export const loader = async ({ params }: LoaderFunctionArgs) => {
   let id = params.slug;
   //fetching api token from the petfinder website
@@ -25,11 +26,23 @@ export const loader = async ({ params }: LoaderFunctionArgs) => {
   });
   const animalId = await res.json();
 
-  return json({ animalId });
+  //  code to fetch organization details
+
+  const orgRes = await fetch(
+    `https://api.petfinder.com/v2/organizations/${animalId.animal.organization_id}`,
+    {
+      headers: {
+        Authorization: `Bearer ${tokenData.access_token}`,
+      },
+    }
+  );
+  const organization = await orgRes.json();
+
+  return json({ animalId, organization });
 };
 export default function Component() {
-  const { animalId } = useLoaderData<typeof loader>();
-  console.log(animalId);
+  const { animalId, organization } = useLoaderData<typeof loader>();
+  console.log(organization);
   // Contact Pop up animation
   function displayCard() {
     let cardPopup = document.getElementById("cardPopup");
@@ -183,6 +196,15 @@ export default function Component() {
 
                   <div id="galleryDiv" className="hidden">
                     Gallery Content
+                  </div>
+                  {/* Organization information */}
+                  <div>
+                    <h2>Organization Details</h2>
+                    <p>{organization.organization.name}</p>
+                    <p>
+                      {organization.organization.address.city},
+                      {organization.organization.address.state}
+                    </p>
                   </div>
                   <div className="mt-6 flex justify-center  ">
                     <button
