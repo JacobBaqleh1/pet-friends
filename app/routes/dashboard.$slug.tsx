@@ -110,7 +110,7 @@ export default function Component() {
                       <h2 className="font-semibold text-2xl ml-4 mt-4">
                         {animalId.animal.name}
                       </h2>
-                      <div className="flex justify-between mt-4 text-lg ">
+                      <div className="flex justify-between mt-6 text-lg ">
                         <h3 className="flex items-center ml-4">
                           <img src={pawPrint} alt="paw" className="w-4 h-4" />
                           {animalId.animal.breeds.primary}
@@ -125,7 +125,7 @@ export default function Component() {
                           {animalId.animal.contact.address.state}
                         </h3>
                       </div>
-                      <div className="mt-4">
+                      <div className="mt-6">
                         {animalId.animal.attributes.shots_current ? (
                           <div className="flex pl-[8rem] ">
                             <img
@@ -175,7 +175,7 @@ export default function Component() {
                           ""
                         )}
                       </div>
-                      <div className="flex justify-around mt-4">
+                      <div className="flex justify-around mt-8">
                         <div className="border-l-4 border-purple-500 inline-block p-2">
                           <p className="text-sm">Age</p>
                           <p className="font-bold">{animalId.animal.age}</p>
@@ -198,13 +198,18 @@ export default function Component() {
                     Gallery Content
                   </div>
                   {/* Organization information */}
-                  <div>
-                    <h2>Organization Details</h2>
-                    <p>{organization.organization.name}</p>
-                    <p>
-                      {organization.organization.address.city},
-                      {organization.organization.address.state}
+                  <div className="mt-8 border  flex flex-col justify-center items-center">
+                    <h2 className="text-2xl">Organization Details</h2>
+                    <p className="font-bold text-xl">
+                      {organization.organization.name}
                     </p>
+                    <div className="flex">
+                      <img src={pinDrop} alt="location" className="w-4 h-4" />
+                      <p className="text-lg">
+                        {organization.organization.address.city},
+                        {organization.organization.address.state}
+                      </p>
+                    </div>
                   </div>
                   <div className="mt-6 flex justify-center  ">
                     <button
@@ -215,9 +220,12 @@ export default function Component() {
                     </button>
                   </div>
                 </div>
+
+                {/* Pop up for adopting information */}
+
                 <div id="cardPopup" className="hidden">
                   <div className="fixed top-0 left-0 w-full h-full flex items-center justify-center bg-gray-900 bg-opacity-50 z-50">
-                    <div className="bg-white p-8 rounded-lg shadow-md">
+                    <div className="bg-purple-300 p-12 rounded-lg shadow-md">
                       <div className="flex justify-end">
                         <button
                           onClick={closeCard}
@@ -239,8 +247,21 @@ export default function Component() {
                           </svg>
                         </button>
                       </div>
-                      <h2>Adoption Card</h2>
-                      <p>Details</p>
+                      <div className="">
+                        <h2>Contact {organization.organization.name} </h2>
+                        <div>
+                          {" "}
+                          <a href={`mailto:${organization.organization.email}`}>
+                            {organization.organization.email}
+                          </a>
+                        </div>
+                        <div>
+                          {" "}
+                          <a href={`tel:${organization.organization.phone}`}>
+                            {organization.organization.phone}
+                          </a>
+                        </div>
+                      </div>
                     </div>
                   </div>
                 </div>
