@@ -4,6 +4,8 @@ import { Suspense } from "react";
 import checkMark from "public/checkMark.svg";
 import pawPrint from "public/pawPrint.svg";
 import pinDrop from "public/pinDrop.svg";
+import phone from "public/phone.svg";
+import email from "public/email.svg";
 
 export const loader = async ({ params }: LoaderFunctionArgs) => {
   let id = params.slug;
@@ -247,20 +249,56 @@ export default function Component() {
                           </svg>
                         </button>
                       </div>
-                      <div className="">
-                        <h2>Contact {organization.organization.name} </h2>
-                        <div>
-                          {" "}
-                          <a href={`mailto:${organization.organization.email}`}>
-                            {organization.organization.email}
-                          </a>
+                      <div className="flex flex-col">
+                        <div className="flex flex-col items-center justify center ">
+                          <h2 className="text-xl">Contact</h2>{" "}
+                          <h2 className="font-bold text-2xl">
+                            {organization.organization.name}{" "}
+                          </h2>
+                          <p>
+                            And Tell Them Your Interest In{" "}
+                            {animalId.animal.name}!
+                          </p>
                         </div>
-                        <div>
-                          {" "}
-                          <a href={`tel:${organization.organization.phone}`}>
-                            {organization.organization.phone}
-                          </a>
-                        </div>
+                        {organization.organization.email ? (
+                          <div className="flex items-center bg-gray-100 rounded-lg pr-4">
+                            <img
+                              className="w-4 h-4 mr-6 ml-2"
+                              src={email}
+                              alt="email"
+                            />{" "}
+                            <div className="flex flex-col">
+                              <p>Email</p>
+                              <a
+                                className="underline"
+                                href={`mailto:${organization.organization.email}`}
+                              >
+                                {organization.organization.email}
+                              </a>
+                            </div>
+                          </div>
+                        ) : (
+                          ""
+                        )}
+                        {organization.organization.phone ? (
+                          <div className=" flex items-center bg-gray-100 rounded-lg">
+                            <img
+                              className="w-4 h-4 mr-6 ml-2"
+                              src={phone}
+                              alt="phone"
+                            />{" "}
+                            <div className="flex flex-col">
+                              <p>Phone</p>
+                              <a
+                                href={`tel:${organization.organization.phone}`}
+                              >
+                                {organization.organization.phone}
+                              </a>
+                            </div>
+                          </div>
+                        ) : (
+                          ""
+                        )}
                       </div>
                     </div>
                   </div>
