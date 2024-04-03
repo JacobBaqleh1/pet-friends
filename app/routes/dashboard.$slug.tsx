@@ -1,6 +1,6 @@
 import { LoaderFunctionArgs, json } from "@remix-run/node";
 import { Await, useLoaderData } from "@remix-run/react";
-import { Suspense } from "react";
+import { Suspense, useState } from "react";
 import checkMark from "public/checkMark.svg";
 import pawPrint from "public/pawPrint.svg";
 import pinDrop from "public/pinDrop.svg";
@@ -43,6 +43,7 @@ export const loader = async ({ params }: LoaderFunctionArgs) => {
   return json({ animalId, organization });
 };
 export default function Component() {
+  const [activeTab, setActiveTab] = useState("aboutMe");
   const { animalId, organization } = useLoaderData<typeof loader>();
   console.log(organization);
   // Contact Pop up animation
@@ -79,8 +80,13 @@ export default function Component() {
                   <div className="flex flex-row justify-center">
                     <div
                       id="aboutMe"
-                      className="cursor-pointer"
+                      className={`cursor-pointer mr-6 ${
+                        activeTab === "aboutMe"
+                          ? " btn btn-active btn-primary"
+                          : "btn btn-outline btn-primary"
+                      }`}
                       onClick={() => {
+                        setActiveTab("aboutMe");
                         document
                           .getElementById("aboutMeDiv")
                           .classList.remove("hidden");
@@ -89,12 +95,17 @@ export default function Component() {
                           .classList.add("hidden");
                       }}
                     >
-                      About Me /
+                      About Me
                     </div>
                     <div
                       id="gallery"
-                      className=" cursor-pointer"
+                      className={`cursor-pointer ${
+                        activeTab === "gallery"
+                          ? " btn btn-active btn-primary"
+                          : "btn btn-outline btn-primary"
+                      }`}
                       onClick={() => {
+                        setActiveTab("gallery");
                         document
                           .getElementById("aboutMeDiv")
                           .classList.add("hidden");
@@ -191,13 +202,25 @@ export default function Component() {
                           <p className="font-bold">{animalId.animal.size}</p>
                         </div>
                       </div>
-                      {/* Here is going to be the organixation info */}
-                      <div></div>
                     </div>
                   </div>
-
-                  <div id="galleryDiv" className="hidden">
-                    Gallery Content
+                  {/* here is the code for the gallery */}
+                  <div
+                    id="galleryDiv"
+                    className="hidden grid grid-cols-2 gap-4"
+                  >
+                    {animalId.animal.photos.map((photo, index) => (
+                      <div
+                        key={index}
+                        className="flex justify-center items-center  overflow-hidden"
+                      >
+                        <img
+                          className="h-auto max-w-full rounded-lg"
+                          src={photo.small}
+                          alt="animal"
+                        />
+                      </div>
+                    ))}
                   </div>
                   {/* Organization information */}
                   <div className="mt-8 border  flex flex-col justify-center items-center">
