@@ -7,17 +7,17 @@ export default function Component() {
   return (
     <>
       <Navbar />{" "}
-      <main>
-        <div className="relative mx-auto  md:max-w-screen-lg ">
+      <main className="">
+        <div className="relative m-auto flex justify-center items-center ">
           <div className=" lg:w-1/2">
-            <div className="pt-16  p-5 opacity-95  lg:p-12">
+            <div className="md:w-[30rem]  m-auto pt-16  p-5 opacity-95  lg:p-12">
               <h2 className="font-customFont text-5xl ">
                 Look for nearby pets today!
               </h2>
             </div>
           </div>
         </div>
-        <div className=" flex justify-center ">
+        <div className="w-[30rem]  m-auto flex justify-center ">
           <Form
             method="get"
             action="/dashboard/search"

@@ -119,7 +119,7 @@ export default function Component() {
                   </div>
                   <div id="aboutMeDiv">
                     {/* About Me Content */}
-                    <div className="overflow-x-auto border-t-2">
+                    <div className="overflow-x-auto border-t-2 ">
                       <h2 className="font-semibold text-2xl ml-4 mt-4">
                         {animalId.animal.name}
                       </h2>

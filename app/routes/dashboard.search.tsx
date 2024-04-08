@@ -68,8 +68,8 @@ export default function Component() {
   const animals = useLoaderData<Animal[]>();
   console.log(animals);
   return (
-    <div>
-      <div className="max-w-7xl mx-auto ">
+    <div className="m-auto">
+      <div className="grid row-span-2 sm:row-span-2 md:row-span-2  gap-4  ">
         {" "}
         <Suspense fallback={<div>Loading...</div>}>
           <Await resolve={animals}>
@@ -82,10 +82,7 @@ export default function Component() {
                       animal.photos.length > 0 && animal.primary_photo_cropped
                   )
                   .map((animal: Animal) => (
-                    <div
-                      key={animal.id}
-                      className="w-1/2 h-[30rem] sm:w-1/2 md:w-1/2 lg:w-1/3 xl:w-1/3 p-2 mb-20 "
-                    >
+                    <div key={animal.id} className=" h-[30rem] p-2 mb-20 ">
                       <div className="max-w-sm rounded overflow-hidden shadow-lg ">
                         <Link
                           className=""
