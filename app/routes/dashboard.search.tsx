@@ -68,13 +68,13 @@ export default function Component() {
   const animals = useLoaderData<Animal[]>();
   console.log(animals);
   return (
-    <div className="m-auto">
-      <div className="grid row-span-2 sm:row-span-2 md:row-span-2  gap-4  ">
+    <div className="lg:w-[65rem] m-auto">
+      <div className="">
         {" "}
         <Suspense fallback={<div>Loading...</div>}>
           <Await resolve={animals}>
             {(animals) => (
-              <div className="flex flex-wrap">
+              <div className="sm:grid sm:grid-cols-2 md:grid-cols-3 gap-4  ">
                 {animals
                   // Filter out animals without photos
                   .filter(
@@ -82,7 +82,12 @@ export default function Component() {
                       animal.photos.length > 0 && animal.primary_photo_cropped
                   )
                   .map((animal: Animal) => (
-                    <div key={animal.id} className=" h-[30rem] p-2 mb-20 ">
+                    <div
+                      key={animal.id}
+                      className=" h-[30rem] p-2 mb-20 flex justify-space-between justify-center 
+                      
+                      items-center   "
+                    >
                       <div className="max-w-sm rounded overflow-hidden shadow-lg ">
                         <Link
                           className=""

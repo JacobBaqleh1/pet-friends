@@ -61,7 +61,7 @@ export default function Component() {
       <Suspense fallback={<div>Loading...</div>}>
         <Await resolve={animalId}>
           <main>
-            <div className="max-w-7xl mx-auto">
+            <div className="m-auto">
               <div className="relative m-5 mt-20 border border-red-500">
                 <div className="flex justify-center -top-16 ">
                   <img
@@ -71,16 +71,16 @@ export default function Component() {
                         : ""
                     }
                     alt="animal"
-                    className="rounded-full w-32 h-32 mx-auto "
+                    className="rounded-full w-40 sm:w-52 sm:h-52 md:w-64 h-40 md:h-64 mx-auto "
                   />
                 </div>
                 {/* Content for animal */}
                 <div className="mt-[1rem]">
                   {/* About me and Gallery div */}
-                  <div className="flex flex-row justify-center">
+                  <div className="flex flex-row justify-center space-x-6 ">
                     <div
                       id="aboutMe"
-                      className={`cursor-pointer mr-6 ${
+                      className={`cursor-pointer md:w-40 md:h-16 ${
                         activeTab === "aboutMe"
                           ? " btn btn-active btn-primary"
                           : "btn btn-outline btn-primary"
@@ -95,11 +95,11 @@ export default function Component() {
                           .classList.add("hidden");
                       }}
                     >
-                      About Me
+                      <p className="text-lg">About Me</p>
                     </div>
                     <div
                       id="gallery"
-                      className={`cursor-pointer ${
+                      className={`cursor-pointer md:w-40 md:h-16 ${
                         activeTab === "gallery"
                           ? " btn btn-active btn-primary"
                           : "btn btn-outline btn-primary"
@@ -114,57 +114,65 @@ export default function Component() {
                           .classList.remove("hidden");
                       }}
                     >
-                      Gallery
+                      <p className="text-lg">Gallery</p>
                     </div>
                   </div>
                   <div id="aboutMeDiv">
                     {/* About Me Content */}
-                    <div className="overflow-x-auto border-t-2 ">
-                      <h2 className="font-semibold text-2xl ml-4 mt-4">
+                    <div className="overflow-x-auto border-t-2 m-auto max-w-xl  ">
+                      <h2 className="font-semibold text-2xl md:text-[4rem] md:leading-[4rem] ml-4 mt-4">
                         {animalId.animal.name}
                       </h2>
                       <div className="flex justify-between mt-6 text-lg ">
                         <h3 className="flex items-center ml-4">
-                          <img src={pawPrint} alt="paw" className="w-4 h-4" />
-                          {animalId.animal.breeds.primary}
+                          <img
+                            src={pawPrint}
+                            alt="paw"
+                            className="w-4 h-4 md:w-8 md:h-8"
+                          />
+                          <p className="md:text-[2rem] md:leading-[4rem]">
+                            {animalId.animal.breeds.primary}
+                          </p>
                         </h3>
                         <h3 className="flex items-center mr-14">
                           <img
-                            className="w-4 h-4"
+                            className="w-4 h-4 md:w-8 md:h-8"
                             src={pinDrop}
                             alt="location"
                           />
-                          {animalId.animal.contact.address.city},
-                          {animalId.animal.contact.address.state}
+                          <p className="md:text-[2rem] md:leading-[4rem]">
+                            {animalId.animal.contact.address.city},
+                            {animalId.animal.contact.address.state}
+                          </p>
                         </h3>
                       </div>
-                      <div className="mt-6">
+                      <div className="mt-6 m-auto pl-[40%] md:text-[2rem] md:leading-[4rem] ">
                         {animalId.animal.attributes.shots_current ? (
-                          <div className="flex pl-[8rem] ">
+                          <div className="flex items-center ">
                             <img
                               src={checkMark}
                               alt="check mark"
-                              className="w-6 h-6"
+                              className="w-6 h-6 md:w-10 md:h-10"
                             />
-                            <p className="ml-2">Vaccinated</p>
+                            <p className="">Vaccinated</p>
                           </div>
                         ) : (
                           ""
                         )}
                         {animalId.animal.attributes.spayed_neutered ? (
-                          <div className="flex pl-[8rem] ">
+                          <div className="flex items-center   ">
                             <img
                               src={checkMark}
                               alt="check mark"
-                              className="w-6 h-6"
+                              className="w-6 h-6 md:w-10 md:h-10"
                             />
-                            <p className="ml-2">Spayed</p>
+                            <p className="">Spayed</p>
                           </div>
                         ) : (
                           ""
                         )}
                         {animalId.animal.attributes.house_trained ? (
-                          <div className="flex pl-[8rem]">
+                          <div className="flex items-center">
                             <img
                               src={checkMark}
                               alt="check mark"
@@ -176,7 +184,7 @@ export default function Component() {
                           ""
                         )}
                         {animalId.animal.attributes.special_needs ? (
-                          <div className="flex pl-[8rem]">
+                          <div className="flex items-center ">
                             <img
                               src={checkMark}
                               alt="check mark"
