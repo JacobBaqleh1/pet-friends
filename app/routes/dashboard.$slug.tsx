@@ -119,7 +119,7 @@ export default function Component() {
                   </div>
                   <div id="aboutMeDiv">
                     {/* About Me Content */}
-                    <div className="overflow-x-auto border-t-2 m-auto max-w-xl  ">
+                    <div className="overflow-x-auto border-t-2 m-auto max-w-3xl  ">
                       <h2 className="font-semibold text-2xl md:text-[4rem] md:leading-[4rem] ml-4 mt-4">
                         {animalId.animal.name}
                       </h2>
@@ -152,9 +152,9 @@ export default function Component() {
                             <img
                               src={checkMark}
                               alt="check mark"
-                              className="w-6 h-6 md:w-10 md:h-10"
+                              className="w-6 h-6 "
                             />
-                            <p className="">Vaccinated</p>
+                            <p className="ml-2">Vaccinated</p>
                           </div>
                         ) : (
                           ""
@@ -164,9 +164,9 @@ export default function Component() {
                             <img
                               src={checkMark}
                               alt="check mark"
-                              className="w-6 h-6 md:w-10 md:h-10"
+                              className="w-6 h-6 "
                             />
-                            <p className="">Spayed</p>
+                            <p className="ml-2">Spayed</p>
                           </div>
                         ) : (
                           ""
@@ -198,24 +198,30 @@ export default function Component() {
                       </div>
                       <div className="flex justify-around mt-8">
                         <div className="border-l-4 border-purple-500 inline-block p-2">
-                          <p className="text-sm">Age</p>
-                          <p className="font-bold">{animalId.animal.age}</p>
+                          <p className="text-sm md:text-xl">Age</p>
+                          <p className="font-bold md:text-4xl">
+                            {animalId.animal.age}
+                          </p>
                         </div>
                         <div className="border-l-4 border-purple-500 inline-block p-2">
-                          <p className="text-sm">Gender </p>
-                          <p className="font-bold">{animalId.animal.gender}</p>
+                          <p className="text-sm md:text-xl">Gender </p>
+                          <p className="font-bold md:text-4xl">
+                            {animalId.animal.gender}
+                          </p>
                         </div>
                         <div className="border-l-4 border-purple-500 inline-block p-2">
-                          <p className="text-sm">Size</p>
-                          <p className="font-bold">{animalId.animal.size}</p>
+                          <p className="text-sm md:text-xl">Size</p>
+                          <p className="font-bold md:text-4xl">
+                            {animalId.animal.size}
+                          </p>
                         </div>
                       </div>
                     </div>
                   </div>
-                  {/* here is the code for the gallery */}
+                  {/* here is the code for the gallery -------------------------*/}
                   <div
                     id="galleryDiv"
-                    className="hidden grid grid-cols-2 gap-4"
+                    className=" grid grid-cols-2 gap-4  md:grid-cols-3 md:gap-8 "
                   >
                     {animalId.animal.photos.map((photo, index) => (
                       <div
@@ -223,7 +229,7 @@ export default function Component() {
                         className="flex justify-center items-center  overflow-hidden"
                       >
                         <img
-                          className="h-auto max-w-full rounded-lg"
+                          className="md:h-80 max-w-full rounded-lg"
                           src={photo.small}
                           alt="animal"
                         />
@@ -231,14 +237,20 @@ export default function Component() {
                     ))}
                   </div>
                   {/* Organization information */}
-                  <div className="mt-8 border  flex flex-col justify-center items-center">
-                    <h2 className="text-2xl">Organization Details</h2>
-                    <p className="font-bold text-xl">
+                  <div className="mt-8 border-t-2 md:h-50 md:space-y-8  flex flex-col justify-center items-center">
+                    <h2 className="text-2xl md:text-4xl">
+                      Organization Details
+                    </h2>
+                    <p className="font-bold text-xl md:text-2xl">
                       {organization.organization.name}
                     </p>
                     <div className="flex">
-                      <img src={pinDrop} alt="location" className="w-4 h-4" />
-                      <p className="text-lg">
+                      <img
+                        src={pinDrop}
+                        alt="location"
+                        className="w-4 h-4 md:w-6 md:h-6"
+                      />
+                      <p className="text-lg md:text-xl">
                         {organization.organization.address.city},
                         {organization.organization.address.state}
                       </p>
@@ -247,7 +259,7 @@ export default function Component() {
                   <div className="mt-6 flex justify-center  ">
                     <button
                       onClick={displayCard}
-                      className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-full shadow-md focus:outline-none focus:shadow-outline "
+                      className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-full shadow-md focus:outline-none focus:shadow-outline md:w-60 md:h-16 mb-10"
                     >
                       Adopt {animalId.animal.name}
                     </button>

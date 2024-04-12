@@ -74,7 +74,7 @@ export default function Component() {
         <Suspense fallback={<div>Loading...</div>}>
           <Await resolve={animals}>
             {(animals) => (
-              <div className="sm:grid sm:grid-cols-2 md:grid-cols-3 gap-4  ">
+              <div className="grid grid-cols-2 sm:grid sm:grid-cols-2 md:grid-cols-3 gap-4  ">
                 {animals
                   // Filter out animals without photos
                   .filter(
@@ -133,6 +133,11 @@ export default function Component() {
             )}
           </Await>
         </Suspense>
+        <div className="join flex justify-center">
+          <button className="join-item btn">«</button>
+          <button className="join-item btn">Page 1</button>
+          <button className="join-item btn">»</button>
+        </div>
       </div>
     </div>
   );
