@@ -221,7 +221,7 @@ export default function Component() {
                   {/* here is the code for the gallery -------------------------*/}
                   <div
                     id="galleryDiv"
-                    className=" grid grid-cols-2 gap-4  md:grid-cols-3 md:gap-8 "
+                    className="hidden grid grid-cols-2 gap-4  md:grid-cols-3 md:gap-8 "
                   >
                     {animalId.animal.photos.map((photo, index) => (
                       <div

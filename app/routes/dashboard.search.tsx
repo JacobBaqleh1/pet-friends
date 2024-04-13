@@ -1,7 +1,6 @@
 import { Await, Link, useLoaderData } from "@remix-run/react";
 import type { LoaderFunctionArgs } from "@remix-run/node";
 import { json } from "@remix-run/node";
-
 import { Suspense } from "react";
 interface Animal {
   id: number;
@@ -39,8 +38,10 @@ export async function loader({ request }: LoaderFunctionArgs) {
   // Fetch animals data
   const formattedDate = getFormattedDate();
   const urls = [
-    `https://api.petfinder.com/v2/animals?before=${formattedDate}&location=${zipcode}&type=${petType}&page=1`,
-    `https://api.petfinder.com/v2/animals?before=${formattedDate}&location=${zipcode}&type=${petType}&page=2`,
+    `https://api.petfinder.com/v2/animals?before=${formattedDate}&location=${zipcode}&type=${petType}&page=${pageNumber}`,
+    `https://api.petfinder.com/v2/animals?before=${formattedDate}&location=${zipcode}&type=${petType}&page=${
+      pageNumber + 1
+    }`,
   ];
 
   const fetchPromises = urls.map((url) =>
@@ -133,11 +134,7 @@ export default function Component() {
             )}
           </Await>
         </Suspense>
-        <div className="join flex justify-center">
-          <button className="join-item btn">«</button>
-          <button className="join-item btn">Page 1</button>
-          <button className="join-item btn">»</button>
-        </div>
+        <div className="join flex justify-center"></div>
       </div>
     </div>
   );
