@@ -78,6 +78,7 @@ export default function Component() {
                 Search
               </button>
             </div>
+            <input type="hidden" name="page" value="3" />
           </Form>
         </div>
 

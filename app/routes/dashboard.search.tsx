@@ -1,4 +1,4 @@
-import { Await, Link, useLoaderData } from "@remix-run/react";
+import { Await, Link, useLoaderData, useSearchParams } from "@remix-run/react";
 import type { LoaderFunctionArgs } from "@remix-run/node";
 import { json } from "@remix-run/node";
 import { Suspense } from "react";
@@ -20,6 +20,7 @@ export async function loader({ request }: LoaderFunctionArgs) {
   let { searchParams } = new URL(request.url);
   let petType = searchParams.get("pet");
   let zipcode = searchParams.get("zipcode");
+  let pageNumber = searchParams.get("page");
 
   // Fetch the API token
   const tokenResponse = await fetch(
@@ -40,7 +41,7 @@ export async function loader({ request }: LoaderFunctionArgs) {
   const urls = [
     `https://api.petfinder.com/v2/animals?before=${formattedDate}&location=${zipcode}&type=${petType}&page=${pageNumber}`,
     `https://api.petfinder.com/v2/animals?before=${formattedDate}&location=${zipcode}&type=${petType}&page=${
-      pageNumber + 1
+      pageNumber !== null ? pageNumber + 1 : 1
     }`,
   ];
 
@@ -56,6 +57,7 @@ export async function loader({ request }: LoaderFunctionArgs) {
 
   // Combine and return animal data
   const combinedAnimals = animalsPages.flatMap((page) => page.animals);
+
   return json(combinedAnimals);
 }
 
@@ -67,6 +69,21 @@ function getFormattedDate() {
 
 export default function Component() {
   const animals = useLoaderData<Animal[]>();
+  const [searchParams, setSearchParams] = useSearchParams();
+  const pageNumber = parseInt(searchParams.get("page") || "1");
+
+  const nextPage = () => {
+    setSearchParams({
+      ...Object.fromEntries(searchParams),
+      page: (pageNumber + 1).toString(),
+    });
+  };
+  const prevPage = () => {
+    setSearchParams({
+      ...Object.fromEntries(searchParams),
+      page: (pageNumber - 1).toString(),
+    });
+  };
   console.log(animals);
   return (
     <div className="lg:w-[65rem] m-auto">
@@ -134,7 +151,30 @@ export default function Component() {
             )}
           </Await>
         </Suspense>
-        <div className="join flex justify-center"></div>
+        <div className="join flex justify-center">
+          {/* <button
+            className="join-item btn"
+            onClick={() => (pageNumber > 1 ? pageNumber - 1 : 1)}
+          >
+            «
+          </button>
+          <button className="join-item btn">Page {pageNumber}</button> */}
+          <button
+            className="join-item btn"
+            disabled={pageNumber <= 1}
+            onClick={prevPage}
+          >
+            «
+          </button>
+          <button className="join-item btn">Page {pageNumber}</button>
+          <button
+            className="join-item btn"
+            disabled={pageNumber >= 5}
+            onClick={nextPage}
+          >
+            »
+          </button>
+        </div>
       </div>
     </div>
   );
