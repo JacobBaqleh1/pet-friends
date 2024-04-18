@@ -1,5 +1,5 @@
 import { LoaderFunctionArgs, json } from "@remix-run/node";
-import { Await, useLoaderData } from "@remix-run/react";
+import { Await, NavLink, useLoaderData } from "@remix-run/react";
 import { Suspense, useState } from "react";
 import checkMark from "public/checkMark.svg";
 import pawPrint from "public/pawPrint.svg";
@@ -312,12 +312,12 @@ export default function Component() {
                             />{" "}
                             <div className="flex flex-col">
                               <p>Email</p>
-                              <a
+                              <NavLink
                                 className="underline"
-                                href={`mailto:${organization.organization.email}`}
+                                to={`mailto:${organization.organization.email}`}
                               >
                                 {organization.organization.email}
-                              </a>
+                              </NavLink>
                             </div>
                           </div>
                         ) : (
@@ -332,11 +332,11 @@ export default function Component() {
                             />{" "}
                             <div className="flex flex-col">
                               <p>Phone</p>
-                              <a
-                                href={`tel:${organization.organization.phone}`}
+                              <NavLink
+                                to={`tel:${organization.organization.phone}`}
                               >
                                 {organization.organization.phone}
-                              </a>
+                              </NavLink>
                             </div>
                           </div>
                         ) : (

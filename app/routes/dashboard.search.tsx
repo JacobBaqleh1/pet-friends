@@ -1,4 +1,10 @@
-import { Await, Link, useLoaderData, useSearchParams } from "@remix-run/react";
+import {
+  Await,
+  Link,
+  useLoaderData,
+  useRouteError,
+  useSearchParams,
+} from "@remix-run/react";
 import type { LoaderFunctionArgs } from "@remix-run/node";
 import { json } from "@remix-run/node";
 import { Suspense } from "react";
@@ -176,6 +182,24 @@ export default function Component() {
           </button>
         </div>
       </div>
+    </div>
+  );
+}
+
+export function ErrorBoundary() {
+  const error = useRouteError();
+  const errorMessage = error instanceof Error && error.message;
+  return (
+    <div>
+      <p>
+        dashboard.search/ We are very sorry. An unexpected error occurred.
+        Please try again or contact us if the problem persists.
+      </p>
+      {errorMessage && (
+        <div className="border-4 border-red-500 p-10">
+          <p>Error message: {error.message}</p>
+        </div>
+      )}
     </div>
   );
 }

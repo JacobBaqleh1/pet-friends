@@ -1,4 +1,4 @@
-import { Form, Outlet } from "@remix-run/react";
+import { Form, Outlet, useRouteError } from "@remix-run/react";
 import Navbar from "../components/navbar";
 
 //import Filter from "../components/filter";
@@ -78,12 +78,30 @@ export default function Component() {
                 Search
               </button>
             </div>
-            <input type="hidden" name="page" value="3" />
+            <input type="hidden" name="page" value="1" />
           </Form>
         </div>
 
         <Outlet />
       </main>
     </>
+  );
+}
+
+export function ErrorBoundary() {
+  const error = useRouteError();
+  const errorMessage = error instanceof Error && error.message;
+  return (
+    <div>
+      <p>
+        dashboard/ We are very sorry. An unexpected error occurred. Please try
+        again or contact us if the problem persists.
+      </p>
+      {errorMessage && (
+        <div className="border-4 border-red-500 p-10">
+          <p>Error message: {error.message}</p>
+        </div>
+      )}
+    </div>
   );
 }
