@@ -6,7 +6,7 @@
 import { useNavigation } from "@remix-run/react";
 import { clsx } from "clsx";
 import { useEffect, useRef, useState } from "react";
-
+import dog from "public/dog.gif";
 function PageTransitionProgressBar() {
   const ref = useRef<HTMLDivElement>(null);
   const [hasAnimationCompleted, setHasAnimationCompleted] = useState(true);
@@ -43,7 +43,7 @@ function PageTransitionProgressBar() {
       <div
         ref={ref}
         className={clsx(
-          "h-full bg-gradient-to-r from-green-400 to-green-600 dark:from-green-500 dark:to-green-700 transition-all duration-500 ease-in-out",
+          "h-4 bg-gradient-to-r from-green-400 to-green-600 dark:from-green-500 dark:to-green-700 transition-all duration-500 ease-in-out",
           navigation.state === "idle" &&
             hasAnimationCompleted &&
             "w-0 opacity-0 transition-none",

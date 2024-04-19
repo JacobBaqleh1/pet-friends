@@ -7,7 +7,7 @@ export default function Component() {
   return (
     <>
       <Navbar />{" "}
-      <main className="">
+      <main className="bg-purple-200 h-screen">
         <div className="relative m-auto flex justify-center items-center ">
           <div className=" lg:w-1/2">
             <div className="md:w-[30rem]  m-auto pt-16  p-5 opacity-95  lg:p-12">

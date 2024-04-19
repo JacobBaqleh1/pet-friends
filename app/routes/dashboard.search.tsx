@@ -92,8 +92,8 @@ export default function Component() {
   };
   console.log(animals);
   return (
-    <div className="lg:w-[65rem] m-auto">
-      <div className="">
+    <div className="lg:w-[65rem] m-auto bg-purple-200 min-h-screen">
+      <div className="h-full">
         {" "}
         <Suspense fallback={<div>Loading...</div>}>
           <Await resolve={animals}>
@@ -108,8 +108,8 @@ export default function Component() {
                   .map((animal: Animal) => (
                     <div
                       key={animal.id}
-                      className=" h-[30rem] p-2 mb-20 flex justify-space-between justify-center 
-                      
+                      className=" h-[20rem]  mb-20 flex justify-space-between justify-center 
+                      bg-purple-200
                       items-center   "
                     >
                       <div className="max-w-sm rounded overflow-hidden shadow-lg ">
@@ -125,10 +125,10 @@ export default function Component() {
                                 : ""
                             }
                             alt="animal"
-                            className="w-full h-[15rem] rounded-full"
+                            className="w-full h-[15rem] "
                           />
                         </Link>
-                        <div className="px-3 py-2">
+                        <div className="px-3 py-2 bg-white">
                           <h2 className="font-bold text-xl mb-2">
                             <Link
                               to={`/dashboard/${animal.id}`}
@@ -139,7 +139,7 @@ export default function Component() {
                             </Link>
                           </h2>
                         </div>
-                        <div className="px-6 pt-4 pb-2">
+                        <div className="bg-white px-6 pt-4 pb-2">
                           <span className="inline-block bg-gray-200 rounded-full px-3 py-1 text-sm font-semibold text-gray-700 mr-2 mb-2">
                             {animal.breeds.primary}
                           </span>
@@ -189,15 +189,16 @@ export default function Component() {
 export function ErrorBoundary() {
   const error = useRouteError();
   const errorMessage = error instanceof Error && error.message;
+  console.log(error);
   return (
     <div>
-      <p>
-        dashboard.search/ We are very sorry. An unexpected error occurred.
-        Please try again or contact us if the problem persists.
-      </p>
+      <p>We are very sorry. An unexpected error occurred.</p>
       {errorMessage && (
         <div className="border-4 border-red-500 p-10">
-          <p>Error message: {error.message}</p>
+          <p>
+            Error message: Please input a valid zipcode and select a pet to
+            search for.
+          </p>
         </div>
       )}
     </div>
