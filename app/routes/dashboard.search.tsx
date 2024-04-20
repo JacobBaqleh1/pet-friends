@@ -92,97 +92,103 @@ export default function Component() {
   };
   console.log(animals);
   return (
-    <div className="lg:w-[65rem] m-auto bg-purple-200 min-h-screen">
-      <div className="h-full">
-        {" "}
-        <Suspense fallback={<div>Loading...</div>}>
-          <Await resolve={animals}>
-            {(animals) => (
-              <div className="grid grid-cols-2 sm:grid sm:grid-cols-2 md:grid-cols-3 gap-4  ">
-                {animals
-                  // Filter out animals without photos
-                  .filter(
-                    (animal: Animal) =>
-                      animal.photos.length > 0 && animal.primary_photo_cropped
-                  )
-                  .map((animal: Animal) => (
-                    <div
-                      key={animal.id}
-                      className=" h-[20rem]  mb-20 flex justify-space-between justify-center 
+    <main className="bg-purple-200 ">
+      <div className="sm:w-[20rem] lg:w-[65rem] m-auto  min-h-screen flex justify-center items-center">
+        <div className="h-full ">
+          {" "}
+          <Suspense fallback={<div>Loading...</div>}>
+            <Await resolve={animals}>
+              {(animals) => (
+                <div className="grid  ">
+                  {animals
+                    // Filter out animals without photos
+                    .filter(
+                      (animal: Animal) =>
+                        animal.photos.length > 0 && animal.primary_photo_cropped
+                    )
+                    .map((animal: Animal) => (
+                      <div
+                        key={animal.id}
+                        className="  h-[20rem] mt-10  mb-20 flex justify-space-between justify-center 
                       bg-purple-200
                       items-center   "
-                    >
-                      <div className="max-w-sm rounded overflow-hidden shadow-lg ">
-                        <Link
-                          className=""
-                          prefetch="intent"
-                          to={`/dashboard/${animal.id}`}
-                        >
-                          <img
-                            src={
-                              animal.primary_photo_cropped
-                                ? animal.primary_photo_cropped.small
-                                : ""
-                            }
-                            alt="animal"
-                            className="w-full h-[15rem] "
-                          />
-                        </Link>
-                        <div className="px-3 py-2 bg-white">
-                          <h2 className="font-bold text-xl mb-2">
-                            <Link
-                              to={`/dashboard/${animal.id}`}
-                              prefetch="intent"
-                              className=""
-                            >
-                              {animal.name}
-                            </Link>
-                          </h2>
-                        </div>
-                        <div className="bg-white px-6 pt-4 pb-2">
-                          <span className="inline-block bg-gray-200 rounded-full px-3 py-1 text-sm font-semibold text-gray-700 mr-2 mb-2">
-                            {animal.breeds.primary}
-                          </span>
-                          <span className="inline-block bg-gray-200 rounded-full px-3 py-1 text-sm font-semibold text-gray-700 mr-2 mb-2">
-                            {animal.age}
-                          </span>
-                          <span className="inline-block bg-gray-200 rounded-full px-3 py-1 text-sm font-semibold text-gray-700 mr-2 mb-2">
-                            {animal.size}
-                          </span>
+                      >
+                        <div className="max-w-sm rounded overflow-hidden shadow-[1px_1px_3px_3px_rgba(109,40,217)] ">
+                          <Link
+                            className=""
+                            prefetch="intent"
+                            to={`/dashboard/${animal.id}`}
+                          >
+                            <img
+                              src={
+                                animal.primary_photo_cropped
+                                  ? animal.primary_photo_cropped.small
+                                  : ""
+                              }
+                              alt="animal"
+                              className="w-[15rem] h-[15rem] p-2 bg-white "
+                            />
+                          </Link>
+                          <div className="px-3 py-2 bg-white flex justify-center">
+                            <h2 className="font-bold text-xl mb-1">
+                              <Link
+                                to={`/dashboard/${animal.id}`}
+                                prefetch="intent"
+                                className=""
+                              >
+                                {animal.name}
+                              </Link>
+                            </h2>
+                          </div>
+                          <div className="bg-white px-6 pt-1 pb-2">
+                            <div className="flex justify-center">
+                              <span className=" bg-gray-200 rounded-full px-3 py-1 text-sm font-semibold text-gray-700 mr-2 mb-2">
+                                {animal.breeds.primary}
+                              </span>
+                            </div>
+                            <div className="flex justify-center">
+                              <span className="inline-block bg-gray-200 rounded-full px-3 py-1 text-sm font-semibold text-gray-700 mr-2 mb-2">
+                                {animal.age}
+                              </span>
+                              <span className="inline-block bg-gray-200 rounded-full px-3 py-1 text-sm font-semibold text-gray-700 mr-2 mb-2">
+                                {animal.size}
+                              </span>
+                            </div>
+                          </div>
                         </div>
                       </div>
-                    </div>
-                  ))}
-              </div>
-            )}
-          </Await>
-        </Suspense>
-        <div className="join flex justify-center">
-          {/* <button
+                    ))}
+                </div>
+              )}
+            </Await>
+          </Suspense>
+          <div className="join flex justify-center">
+            {/* <button
             className="join-item btn"
             onClick={() => (pageNumber > 1 ? pageNumber - 1 : 1)}
           >
             «
           </button>
           <button className="join-item btn">Page {pageNumber}</button> */}
-          <button
-            className="join-item btn"
-            disabled={pageNumber <= 1}
-            onClick={prevPage}
-          >
-            «
-          </button>
-          <button className="join-item btn">Page {pageNumber}</button>
-          <button
-            className="join-item btn"
-            disabled={pageNumber >= 5}
-            onClick={nextPage}
-          >
-            »
-          </button>
+            <button
+              className="join-item btn"
+              disabled={pageNumber <= 1}
+              onClick={prevPage}
+            >
+              «
+            </button>
+            <button className="join-item btn">Page {pageNumber}</button>
+            <button
+              className="join-item btn"
+              disabled={pageNumber >= 5}
+              onClick={nextPage}
+            >
+              »
+            </button>
+          </div>
         </div>
       </div>
-    </div>
+    </main>
   );
 }
 
