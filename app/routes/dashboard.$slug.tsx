@@ -57,13 +57,13 @@ export default function Component() {
     cardPopup.style.display = "none";
   }
   return (
-    <main>
+    <main className="bg-purple-100">
       <Suspense fallback={<div>Loading...</div>}>
         <Await resolve={animalId}>
           <main>
             <div className="m-auto">
-              <div className="relative m-5 mt-20 border border-red-500">
-                <div className="flex justify-center -top-16 ">
+              <div className="relative m-5 mt-20  ">
+                <div className="flex justify-center -top-16  ">
                   <img
                     src={
                       animalId.animal.primary_photo_cropped
@@ -71,18 +71,18 @@ export default function Component() {
                         : ""
                     }
                     alt="animal"
-                    className="rounded-full w-40 sm:w-52 sm:h-52 md:w-64 h-40 md:h-64 mx-auto "
+                    className="rounded-full w-40 sm:w-52 sm:h-52 md:w-64 h-40 md:h-64 mx-auto  border-purple-600 border-2 "
                   />
                 </div>
                 {/* Content for animal */}
-                <div className="mt-[1rem]">
+                <div className="">
                   {/* About me and Gallery div */}
-                  <div className="flex flex-row justify-center space-x-6 ">
+                  <div className=" flex flex-row justify-center space-x-6 border-t-purple-600 border-t-2 ">
                     <div
                       id="aboutMe"
-                      className={`cursor-pointer md:w-40 md:h-16 ${
+                      className={`cursor-pointer md:w-40 md:h-16 mt-5 ${
                         activeTab === "aboutMe"
-                          ? " btn btn-active btn-primary"
+                          ? "bg-indigo-500 btn btn-active btn-primary"
                           : "btn btn-outline btn-primary"
                       }`}
                       onClick={() => {
@@ -99,9 +99,9 @@ export default function Component() {
                     </div>
                     <div
                       id="gallery"
-                      className={`cursor-pointer md:w-40 md:h-16 ${
+                      className={`mt-5 cursor-pointer md:w-40 md:h-16 ${
                         activeTab === "gallery"
-                          ? " btn btn-active btn-primary"
+                          ? "bg-indigo-500 btn btn-active btn-primary"
                           : "btn btn-outline btn-primary"
                       }`}
                       onClick={() => {
@@ -119,9 +119,9 @@ export default function Component() {
                   </div>
                   <div id="aboutMeDiv">
                     {/* About Me Content */}
-                    <div className="overflow-x-auto border-t-2 m-auto max-w-3xl  ">
+                    <div className="overflow-x-auto  m-auto max-w-3xl  ">
                       <h2 className="font-semibold text-2xl md:text-[4rem] md:leading-[4rem] ml-4 mt-4">
-                        {animalId.animal.name}
+                        Hi im {animalId.animal.name}!
                       </h2>
                       <div className="flex justify-between mt-6 text-lg ">
                         <h3 className="flex items-center ml-4">
@@ -196,7 +196,7 @@ export default function Component() {
                           ""
                         )}
                       </div>
-                      <div className="flex justify-around mt-8">
+                      <div className="flex justify-between mt-8">
                         <div className="border-l-4 border-purple-500 inline-block p-2">
                           <p className="text-sm md:text-xl">Age</p>
                           <p className="font-bold md:text-4xl">
@@ -259,7 +259,7 @@ export default function Component() {
                   <div className="mt-6 flex justify-center  ">
                     <button
                       onClick={displayCard}
-                      className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-full shadow-md focus:outline-none focus:shadow-outline md:w-60 md:h-16 mb-10"
+                      className="bg-indigo-500 btn hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-full shadow-md focus:outline-none focus:shadow-outline md:w-60 md:h-16 mb-10 text-lg"
                     >
                       Adopt {animalId.animal.name}
                     </button>

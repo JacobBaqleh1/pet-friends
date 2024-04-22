@@ -93,13 +93,15 @@ export default function Component() {
   console.log(animals);
   return (
     <main className="bg-purple-200 ">
-      <div className="sm:w-[20rem] lg:w-[65rem] m-auto  min-h-screen flex justify-center items-center">
-        <div className="h-full ">
+      <div className="flex justify-center ">
+        <div
+        //  className="h-full "
+        >
           {" "}
           <Suspense fallback={<div>Loading...</div>}>
             <Await resolve={animals}>
               {(animals) => (
-                <div className="grid  ">
+                <div className="grid gap-8 md:gap-16 grid-cols-2 md:grid-cols-3 w-[24rem] sm:w-[30rem] md:w-[50rem]  ">
                   {animals
                     // Filter out animals without photos
                     .filter(
@@ -107,13 +109,8 @@ export default function Component() {
                         animal.photos.length > 0 && animal.primary_photo_cropped
                     )
                     .map((animal: Animal) => (
-                      <div
-                        key={animal.id}
-                        className="  h-[20rem] mt-10  mb-20 flex justify-space-between justify-center 
-                      bg-purple-200
-                      items-center   "
-                      >
-                        <div className="max-w-sm rounded overflow-hidden shadow-[1px_1px_3px_3px_rgba(109,40,217)] ">
+                      <div key={animal.id}>
+                        <div className="my-14 rounded overflow-hidden shadow-[1px_1px_3px_3px_rgba(109,40,217)] ">
                           <Link
                             className=""
                             prefetch="intent"

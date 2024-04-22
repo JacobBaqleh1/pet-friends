@@ -17,7 +17,7 @@ export default function Component() {
             </div>
           </div>
         </div>
-        <div className="w-[30rem]  m-auto flex justify-center ">
+        <div className=" w-[20rem] sm:w-[30rem]  m-auto flex justify-center ">
           <Form
             method="get"
             action="/dashboard/search"
@@ -73,7 +73,7 @@ export default function Component() {
             <div className="flex justify-center">
               <button
                 type="submit"
-                className="  bg-indigo-500 text-white px-4 py-2 btn btn-active btn-primary w-[20rem]"
+                className="  bg-indigo-500 text-white px-4 py-2 btn btn-active btn-primary w-[14rem] sm:w-[20rem]"
               >
                 Search
               </button>
