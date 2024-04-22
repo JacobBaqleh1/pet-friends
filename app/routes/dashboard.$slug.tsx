@@ -57,13 +57,13 @@ export default function Component() {
     cardPopup.style.display = "none";
   }
   return (
-    <main className="bg-purple-100">
+    <main className="bg-purple-200">
       <Suspense fallback={<div>Loading...</div>}>
         <Await resolve={animalId}>
           <main>
             <div className="m-auto">
-              <div className="relative m-5 mt-20  ">
-                <div className="flex justify-center -top-16  ">
+              <div className="relative  mt-20 w-[20rem] md:w-[40rem] m-auto">
+                <div className="flex justify-center -top-16 m-auto ">
                   <img
                     src={
                       animalId.animal.primary_photo_cropped
@@ -119,10 +119,16 @@ export default function Component() {
                   </div>
                   <div id="aboutMeDiv">
                     {/* About Me Content */}
-                    <div className="overflow-x-auto  m-auto max-w-3xl  ">
-                      <h2 className="font-semibold text-2xl md:text-[4rem] md:leading-[4rem] ml-4 mt-4">
-                        Hi im {animalId.animal.name}!
-                      </h2>
+                    <div className="overflow-x-auto  m-auto max-w-3xl">
+                      <div className="flex justify-center">
+                        <h2 className="font-semibold text-2xl md:text-[4rem] md:leading-[4rem] ml-4 mt-4 font-customFont">
+                          Hi im{" "}
+                          <span className="text-purple-500 ">
+                            {animalId.animal.name}
+                          </span>
+                          !
+                        </h2>
+                      </div>
                       <div className="flex justify-between mt-6 text-lg ">
                         <h3 className="flex items-center ml-4">
                           <img
@@ -237,7 +243,7 @@ export default function Component() {
                     ))}
                   </div>
                   {/* Organization information */}
-                  <div className="mt-8 border-t-2 md:h-50 md:space-y-8  flex flex-col justify-center items-center">
+                  <div className="mt-8 border-2 rounded-3xl md:h-50 md:space-y-8  flex flex-col justify-center items-center bg-white border-purple-500">
                     <h2 className="text-2xl md:text-4xl">
                       Organization Details
                     </h2>
@@ -304,7 +310,7 @@ export default function Component() {
                           </p>
                         </div>
                         {organization.organization.email ? (
-                          <div className="flex items-center bg-gray-100 rounded-lg pr-4">
+                          <div className="flex items-center bg-white mt-6 rounded-lg pr-4">
                             <img
                               className="w-4 h-4 mr-6 ml-2"
                               src={email}
@@ -324,7 +330,7 @@ export default function Component() {
                           ""
                         )}
                         {organization.organization.phone ? (
-                          <div className=" flex items-center bg-gray-100 rounded-lg">
+                          <div className=" flex items-center bg-white mt-6 rounded-lg">
                             <img
                               className="w-4 h-4 mr-6 ml-2"
                               src={phone}
