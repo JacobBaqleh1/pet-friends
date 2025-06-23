@@ -1,15 +1,74 @@
-export default function Filter() {
-  return (
-    <div>
-      <details
-        open
-        className="m-10 max-w-md w-screen overflow-hidden rounded-lg border border-gray-200 open:shadow-lg text-gray-700"
-      >
-        <summary className="flex cursor-pointer select-none items-center justify-between bg-gray-100 px-5 py-3 lg:hidden">
-          <span className="text-sm font-medium"> Toggle Filters </span>
+import { Form, useSearchParams, useNavigation } from "@remix-run/react";
+import { useState } from "react";
 
+export default function Filter({ breeds = [] }) {
+  const [searchParams] = useSearchParams();
+  const [isOpen, setIsOpen] = useState(false);
+  const navigation = useNavigation();
+  const isFiltering = navigation.state === "submitting";
+
+  // Get current filter values
+  const currentAge = searchParams.get("age") || "";
+  const currentBreed = searchParams.get("breed") || "";
+  const currentGender = searchParams.get("gender") || "";
+  const currentDistance = searchParams.get("distance") || "25";
+  const handleSubmit = (event) => {
+    event.preventDefault();
+    const formData = new FormData(event.target);
+    const newSearchParams = new URLSearchParams();
+
+    // Preserve essential search parameters
+    const pet = searchParams.get("pet");
+    const zipcode = searchParams.get("zipcode");
+    if (pet) newSearchParams.set("pet", pet);
+    if (zipcode) newSearchParams.set("zipcode", zipcode);
+
+    // Update search params with form data
+    const age = formData.get("age");
+    const breed = formData.get("breed");
+    const gender = formData.get("gender");
+    const distance = formData.get("distance");
+
+    if (age) newSearchParams.set("age", age);
+    if (breed) newSearchParams.set("breed", breed);
+    if (gender) newSearchParams.set("gender", gender);
+    if (distance) newSearchParams.set("distance", distance);
+    else newSearchParams.set("distance", "25"); // Default fallback
+
+    // Reset to page 1 when filtering
+    newSearchParams.set("page", "1");
+
+    // Navigate with new search params
+    window.location.search = newSearchParams.toString();
+  };
+  const clearFilters = () => {
+    const newSearchParams = new URLSearchParams(searchParams);
+
+    // Preserve essential search parameters
+    const pet = searchParams.get("pet");
+    const zipcode = searchParams.get("zipcode");
+
+    // Clear all search params and rebuild with essentials
+    const clearedParams = new URLSearchParams();
+    if (pet) clearedParams.set("pet", pet);
+    if (zipcode) clearedParams.set("zipcode", zipcode);
+    clearedParams.set("distance", "25"); // Reset to default
+    clearedParams.set("page", "1");
+
+    window.location.search = clearedParams.toString();
+  };
+
+  return (
+    <div className="w-full max-w-md mx-auto">
+      <div className="bg-white rounded-2xl shadow-medium border border-gray-100 overflow-hidden">
+        {/* Mobile Toggle */}
+        <button
+          onClick={() => setIsOpen(!isOpen)}
+          className="flex w-full cursor-pointer select-none items-center justify-between bg-gradient-to-r from-primary-50 to-secondary-50 px-6 py-4 lg:hidden hover:from-primary-100 hover:to-secondary-100 transition-colors duration-200"
+        >
+          <span className="text-sm font-semibold text-gray-700">🎯 Filter Options</span>
           <svg
-            className="h-5 w-5"
+            className={`h-5 w-5 text-gray-600 transition-transform duration-200 ${isOpen ? 'rotate-180' : ''}`}
             xmlns="http://www.w3.org/2000/svg"
             fill="none"
             viewBox="0 0 24 24"
@@ -19,155 +78,154 @@ export default function Filter() {
               strokeLinecap="round"
               strokeLinejoin="round"
               strokeWidth="2"
-              d="M4 6h16M4 12h16M4 18h16"
+              d="M19 9l-7 7-7-7"
             />
           </svg>
-        </summary>
+        </button>
 
-        <form action="" className="flex border-t border-gray-200 lg:border-t-0">
-          <fieldset className="w-full">
-            <legend className="block w-full bg-gray-50 px-5 py-3 text-xs font-medium">
-              Type
-            </legend>
-
-            <div className="space-y-2 px-5 py-6">
-              <div className="flex items-center">
-                <input
-                  id="New"
-                  type="checkbox"
-                  name="type[New]"
-                  className="h-5 w-5 rounded border-gray-300"
-                  checked
-                />
-
-                <label htmlFor="New" className="ml-3 text-sm font-medium">
-                  {" "}
-                  N{" "}
-                </label>
-              </div>
-
-              <div className="flex items-center">
-                <input
-                  id="Used"
-                  type="checkbox"
-                  name="type[Used]"
-                  className="h-5 w-5 rounded border-gray-300"
-                />
-
-                <label htmlFor="Used" className="ml-3 text-sm font-medium">
-                  {" "}
-                  Used{" "}
-                </label>
-              </div>
-
-              <div className="flex items-center">
-                <input
-                  id="Branded"
-                  type="checkbox"
-                  name="type[Branded]"
-                  className="h-5 w-5 rounded border-gray-300"
-                />
-
-                <label htmlFor="Branded" className="ml-3 text-sm font-medium">
-                  {" "}
-                  Branded{" "}
-                </label>
-              </div>
-
-              <div className="pt-2">
-                <button
-                  type="button"
-                  className="text-xs text-gray-500 underline"
+        {/* Filter Form */}
+        <div className={`lg:block ${isOpen ? 'block' : 'hidden'}`}>
+          <Form onSubmit={handleSubmit} className="border-t border-gray-100 lg:border-t-0">
+            {/* Distance Filter */}
+            <fieldset className="w-full">
+              <legend className="block w-full bg-gradient-to-r from-gray-50 to-gray-100 px-6 py-3 text-sm font-semibold text-gray-700">
+                🌍 Search Distance
+              </legend>
+              <div className="px-6 py-4">
+                <select
+                  name="distance"
+                  defaultValue={currentDistance}
+                  className="w-full h-12 rounded-xl border-2 border-gray-200 focus:border-primary-500 focus:ring-2 focus:ring-primary-200 transition-colors duration-200 px-4 bg-white"
                 >
-                  Reset Type
-                </button>
+                  <option value="5">Within 5 miles</option>
+                  <option value="10">Within 10 miles</option>
+                  <option value="25">Within 25 miles</option>
+                  <option value="50">Within 50 miles</option>
+                  <option value="100">Within 100 miles</option>
+                  <option value="500">Anywhere</option>
+                </select>
               </div>
-            </div>
-          </fieldset>
+            </fieldset>
 
-          <fieldset className="w-full">
-            <legend className="block w-full bg-gray-50 px-5 py-3 text-xs font-medium">
-              Price
-            </legend>
-
-            <div className="space-y-2 px-5 py-6">
-              <div className="flex items-center">
-                <input
-                  id="300+"
-                  type="radio"
-                  name="Price"
-                  value="300+"
-                  className="h-5 w-5 rounded border-gray-300"
-                />
-
-                <label htmlFor="300+" className="ml-3 text-sm font-medium">
-                  {" "}
-                  300+{" "}
-                </label>
-              </div>
-
-              <div className="flex items-center">
-                <input
-                  id="600+"
-                  type="radio"
-                  name="Price"
-                  value="600+"
-                  className="h-5 w-5 rounded border-gray-300"
-                />
-
-                <label htmlFor="600+" className="ml-3 text-sm font-medium">
-                  {" "}
-                  600+{" "}
-                </label>
-              </div>
-
-              <div className="flex items-center">
-                <input
-                  id="1500+"
-                  type="radio"
-                  name="Price"
-                  value="1500+"
-                  className="h-5 w-5 rounded border-gray-300"
-                  checked
-                />
-
-                <label htmlFor="1500+" className="ml-3 text-sm font-medium">
-                  {" "}
-                  1500+{" "}
-                </label>
-              </div>
-
-              <div className="pt-2">
-                <button
-                  type="button"
-                  className="text-xs text-gray-500 underline"
+            {/* Age Filter */}
+            <fieldset className="w-full border-t border-gray-100">
+              <legend className="block w-full bg-gradient-to-r from-gray-50 to-gray-100 px-6 py-3 text-sm font-semibold text-gray-700">
+                🎂 Age Range
+              </legend>
+              <div className="px-6 py-4">
+                <select
+                  name="age"
+                  defaultValue={currentAge}
+                  className="w-full h-12 rounded-xl border-2 border-gray-200 focus:border-secondary-500 focus:ring-2 focus:ring-secondary-200 transition-colors duration-200 px-4 bg-white"
                 >
-                  Reset Price
-                </button>
+                  <option value="">Any Age</option>
+                  <option value="Baby">Baby</option>
+                  <option value="Young">Young</option>
+                  <option value="Adult">Adult</option>
+                  <option value="Senior">Senior</option>
+                </select>
               </div>
-            </div>
-          </fieldset>
-        </form>
-        <div>
-          <div className="flex justify-between border-t border-gray-200 px-5 py-3">
-            <button
-              name="reset"
-              type="button"
-              className="rounded text-xs font-medium text-gray-600 underline"
-            >
-              Reset All
-            </button>
+            </fieldset>
 
-            <button
-              name="commit"
-              type="button"
-              className="rounded bg-blue-600 px-5 py-3 text-xs font-medium text-white active:scale-95"
+            {/* Gender Filter */}
+            <fieldset className="w-full border-t border-gray-100">
+              <legend className="block w-full bg-gradient-to-r from-gray-50 to-gray-100 px-6 py-3 text-sm font-semibold text-gray-700">
+                ⚥ Gender
+              </legend>
+              <div className="px-6 py-4">
+                <div className="grid grid-cols-2 gap-3">
+                  <label className="flex items-center cursor-pointer group">
+                    <input
+                      type="radio"
+                      name="gender"
+                      value="Male"
+                      defaultChecked={currentGender === "Male"}
+                      className="h-5 w-5 border-2 border-gray-300 text-primary-600 focus:ring-primary-500 focus:ring-2 transition-colors duration-200"
+                    />
+                    <span className="ml-3 text-sm font-medium text-gray-700 group-hover:text-primary-600 transition-colors duration-200">
+                      ♂️ Male
+                    </span>
+                  </label>
+                  <label className="flex items-center cursor-pointer group">
+                    <input
+                      type="radio"
+                      name="gender"
+                      value="Female"
+                      defaultChecked={currentGender === "Female"}
+                      className="h-5 w-5 border-2 border-gray-300 text-secondary-600 focus:ring-secondary-500 focus:ring-2 transition-colors duration-200"
+                    />
+                    <span className="ml-3 text-sm font-medium text-gray-700 group-hover:text-secondary-600 transition-colors duration-200">
+                      ♀️ Female
+                    </span>
+                  </label>
+                </div>
+                <label className="flex items-center cursor-pointer group mt-3">
+                  <input
+                    type="radio"
+                    name="gender"
+                    value=""
+                    defaultChecked={currentGender === ""}
+                    className="h-5 w-5 border-2 border-gray-300 text-accent-600 focus:ring-accent-500 focus:ring-2 transition-colors duration-200"
+                  />
+                  <span className="ml-3 text-sm font-medium text-gray-700 group-hover:text-accent-600 transition-colors duration-200">
+                    Either
+                  </span>
+                </label>
+              </div>
+            </fieldset>
+
+            {/* Breed Filter */}
+            {breeds.length > 0 && (
+              <fieldset className="w-full border-t border-gray-100">
+                <legend className="block w-full bg-gradient-to-r from-gray-50 to-gray-100 px-6 py-3 text-sm font-semibold text-gray-700">
+                  🐾 Breed
+                </legend>
+                <div className="px-6 py-4">
+                  <select
+                    name="breed"
+                    defaultValue={currentBreed}
+                    className="w-full h-12 rounded-xl border-2 border-gray-200 focus:border-accent-500 focus:ring-2 focus:ring-accent-200 transition-colors duration-200 px-4 bg-white"
+                  >
+                    <option value="">Any Breed</option>
+                    {breeds.map((breed) => (
+                      <option key={breed.name} value={breed.name}>
+                        {breed.name}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+              </fieldset>
+            )}
+
+            {/* Action Buttons */}
+            <div className="border-t border-gray-100 p-6 space-y-3">              <button
+              type="submit"
+              disabled={isFiltering}
+              className="w-full bg-gradient-to-r from-primary-500 to-secondary-500 text-white font-semibold py-3 rounded-xl hover:from-primary-600 hover:to-secondary-600 transition-all duration-200 shadow-medium hover:shadow-large disabled:opacity-70 disabled:cursor-not-allowed"
             >
-              Apply Filters
-            </button>
-          </div>
+              {isFiltering ? (
+                <span className="flex items-center justify-center">
+                  <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin mr-2"></div>
+                  Filtering...
+                </span>
+              ) : (
+                "🔍 Apply Filters"
+              )}
+            </button><button
+              type="button"
+              onClick={(e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                clearFilters();
+              }}
+              className="w-full bg-gray-100 text-gray-700 font-medium py-3 rounded-xl hover:bg-gray-200 transition-all duration-200"
+            >
+                🗑️ Clear All
+              </button>
+            </div>
+          </Form>
         </div>
-      </details>
+      </div>
     </div>
   );
 }
