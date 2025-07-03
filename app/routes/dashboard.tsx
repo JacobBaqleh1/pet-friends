@@ -1,9 +1,7 @@
-import { Form, Outlet, useRouteError, useNavigation } from "@remix-run/react";
+import { Form, Outlet, useRouteError } from "@remix-run/react";
 import Navbar from "../components/navbar";
 
 export default function Component() {
-  const navigation = useNavigation();
-  const isSearching = navigation.state === "submitting" && navigation.formAction === "/search";
   return (
     <>
       <Navbar />
@@ -102,26 +100,18 @@ export default function Component() {
                 <option value="100">Within 100 miles</option>
                 <option value="500">Anywhere</option>
               </select>
-            </div>            {/* Search Button */}
+            </div>
+
+            {/* Search Button */}
             <button
               type="submit"
-              disabled={isSearching}
-              className="w-full bg-gradient-to-r from-primary-500 to-secondary-500 text-white font-semibold py-4 rounded-xl shadow-medium hover:shadow-large hover:from-primary-600 hover:to-secondary-600 transform hover:-translate-y-0.5 transition-all duration-200 text-lg disabled:opacity-70 disabled:cursor-not-allowed disabled:transform-none"
+              className="w-full bg-gradient-to-r from-primary-500 to-secondary-500 text-white font-semibold py-4 rounded-xl shadow-medium hover:shadow-large hover:from-primary-600 hover:to-secondary-600 transform hover:-translate-y-0.5 transition-all duration-200 text-lg"
             >
               <span className="flex items-center justify-center">
-                {isSearching ? (
-                  <>
-                    <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin mr-2"></div>
-                    Searching for pets...
-                  </>
-                ) : (
-                  <>
-                    Find My Perfect Match
-                    <svg className="ml-2 w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-                    </svg>
-                  </>
-                )}
+                Find My Perfect Match
+                <svg className="ml-2 w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                </svg>
               </span>
             </button>
           </div>

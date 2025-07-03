@@ -21,17 +21,7 @@ export default function Navbar() {
 
           {/* Navigation Links */}
           <div className="hidden md:flex items-center space-x-8">
-            <NavLink
-              to="/"
-              className={({ isActive }) =>
-                `px-3 py-2 rounded-lg text-sm font-medium transition-colors duration-200 ${isActive
-                  ? "text-primary-600 bg-primary-50"
-                  : "text-gray-600 hover:text-primary-600 hover:bg-gray-50"
-                }`
-              }
-            >
-              Home
-            </NavLink>
+
             <NavLink
               to="/dashboard"
               className={({ isActive }) =>
@@ -41,11 +31,9 @@ export default function Navbar() {
                 }`
               }
             >
-              Find Pets
+              Home
             </NavLink>
-            <button className="px-6 py-2 bg-gradient-to-r from-primary-500 to-secondary-500 text-white font-medium rounded-lg hover:from-primary-600 hover:to-secondary-600 transition-all duration-200 shadow-md hover:shadow-lg">
-              Get Started
-            </button>
+
           </div>
 
           {/* Mobile menu button */}

@@ -1,11 +1,9 @@
-import { Form, useSearchParams, useNavigation } from "@remix-run/react";
+import { Form, useSearchParams } from "@remix-run/react";
 import { useState } from "react";
 
 export default function Filter({ breeds = [] }) {
   const [searchParams] = useSearchParams();
   const [isOpen, setIsOpen] = useState(false);
-  const navigation = useNavigation();
-  const isFiltering = navigation.state === "submitting";
 
   // Get current filter values
   const currentAge = searchParams.get("age") || "";
@@ -198,28 +196,21 @@ export default function Filter({ breeds = [] }) {
             )}
 
             {/* Action Buttons */}
-            <div className="border-t border-gray-100 p-6 space-y-3">              <button
-              type="submit"
-              disabled={isFiltering}
-              className="w-full bg-gradient-to-r from-primary-500 to-secondary-500 text-white font-semibold py-3 rounded-xl hover:from-primary-600 hover:to-secondary-600 transition-all duration-200 shadow-medium hover:shadow-large disabled:opacity-70 disabled:cursor-not-allowed"
-            >
-              {isFiltering ? (
-                <span className="flex items-center justify-center">
-                  <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin mr-2"></div>
-                  Filtering...
-                </span>
-              ) : (
-                "🔍 Apply Filters"
-              )}
-            </button><button
-              type="button"
-              onClick={(e) => {
-                e.preventDefault();
-                e.stopPropagation();
-                clearFilters();
-              }}
-              className="w-full bg-gray-100 text-gray-700 font-medium py-3 rounded-xl hover:bg-gray-200 transition-all duration-200"
-            >
+            <div className="border-t border-gray-100 p-6 space-y-3">
+              <button
+                type="submit"
+                className="w-full bg-gradient-to-r from-primary-500 to-secondary-500 text-white font-semibold py-3 rounded-xl hover:from-primary-600 hover:to-secondary-600 transition-all duration-200 shadow-medium hover:shadow-large"
+              >
+                🔍 Apply Filters
+              </button>              <button
+                type="button"
+                onClick={(e) => {
+                  e.preventDefault();
+                  e.stopPropagation();
+                  clearFilters();
+                }}
+                className="w-full bg-gray-100 text-gray-700 font-medium py-3 rounded-xl hover:bg-gray-200 transition-all duration-200"
+              >
                 🗑️ Clear All
               </button>
             </div>
