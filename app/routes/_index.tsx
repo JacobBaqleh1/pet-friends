@@ -43,7 +43,7 @@ export default function Component() {
             </div>
 
             {/* CTA Button */}
-            <Form method="get" action="/dashboard">
+            <Form method="get" action="/pets">
               <button className="group relative px-8 py-4 bg-gradient-to-r from-primary-500 to-secondary-500 text-white font-semibold rounded-2xl shadow-large hover:shadow-xl transform hover:-translate-y-1 transition-all duration-300 text-lg">
                 <span className="relative z-10">Start Your Journey</span>
                 <div className="absolute inset-0 bg-gradient-to-r from-primary-600 to-secondary-600 rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
