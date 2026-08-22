@@ -28,19 +28,33 @@ export async function loader({ params }: LoaderFunctionArgs) {
   return json({ animal });
 }
 
-/** Petfinder descriptions are often ALL CAPS — soften for mobile readability. */
-function formatDescription(text: string) {
-  const letters = text.replace(/[^a-zA-Z]/g, "");
-  if (letters.length < 24) return text;
+/** Soften ALL CAPS blocks Petfinder often returns, while keeping normal sentences. */
+function softenAllCaps(chunk: string) {
+  const letters = chunk.replace(/[^a-zA-Z]/g, "");
+  if (letters.length < 12) return chunk;
 
   const upperRatio =
     letters.replace(/[^A-Z]/g, "").length / Math.max(letters.length, 1);
-  if (upperRatio < 0.7) return text;
+  if (upperRatio < 0.7) return chunk;
 
-  const lowered = text.toLowerCase();
-  return lowered.replace(/(^\s*[a-z])|([.!?]\s+[a-z])/g, (match) =>
-    match.toUpperCase()
-  );
+  const urls: string[] = [];
+  const withPlaceholders = chunk.replace(/https?:\/\/\S+/gi, (url) => {
+    urls.push(url);
+    return `__URL_${urls.length - 1}__`;
+  });
+
+  const softened = withPlaceholders
+    .toLowerCase()
+    .replace(/(^\s*[a-z])|([.!?]\s+[a-z])/g, (match) => match.toUpperCase());
+
+  return softened.replace(/__URL_(\d+)__/g, (_, index) => urls[Number(index)]);
+}
+
+function formatDescription(text: string) {
+  return text
+    .split(/(\n+)/)
+    .map((part) => (/^\n+$/.test(part) ? part : softenAllCaps(part)))
+    .join("");
 }
 
 export default function PetDetails() {
