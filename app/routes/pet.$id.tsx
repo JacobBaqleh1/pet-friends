@@ -6,7 +6,7 @@ import {
   useRouteError,
   isRouteErrorResponse,
 } from "@remix-run/react";
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import Navbar from "../components/navbar";
 import { getAnimalDetail } from "../lib/petfinder-graphql.server";
 
@@ -65,21 +65,14 @@ export default function PetDetails() {
     : animal.photoUrl
       ? [animal.photoUrl]
       : [];
-  const currentPhoto = photos[activePhoto] ?? photos[0];
   const orgLocation = [animal.organization.city, animal.organization.state]
     .filter(Boolean)
     .join(", ");
   const hasContact =
     Boolean(animal.organization.email) || Boolean(animal.organization.phone);
-  const aboutText =
-    animal.description?.trim()
-      ? formatDescription(animal.description.trim())
-      : `${animal.name} is a ${animal.age.toLowerCase()} ${animal.breed.toLowerCase()} looking for a loving home. Browse their photos here, then reach out through Petfinder to start the adoption conversation.`;
-
-  const showPrev = () =>
-    setActivePhoto((index) => (index === 0 ? photos.length - 1 : index - 1));
-  const showNext = () =>
-    setActivePhoto((index) => (index === photos.length - 1 ? 0 : index + 1));
+  const aboutText = animal.description?.trim()
+    ? formatDescription(animal.description.trim())
+    : `${animal.name} is a ${animal.age.toLowerCase()} ${animal.breed.toLowerCase()} looking for a loving home. Browse their photos here, then reach out through Petfinder to start the adoption conversation.`;
 
   return (
     <>
@@ -91,7 +84,7 @@ export default function PetDetails() {
         />
 
         <div className="relative mx-auto max-w-6xl px-3 py-4 sm:px-6 sm:py-8 lg:px-8">
-          <div className="mb-4 flex items-center justify-between gap-3 sm:mb-8">
+          <div className="mb-4 flex items-center justify-between gap-3 sm:mb-6">
             <button
               type="button"
               onClick={() => window.history.back()}
@@ -105,109 +98,29 @@ export default function PetDetails() {
             </span>
           </div>
 
-          <section className="grid items-start gap-0 lg:grid-cols-[1.05fr_0.95fr] lg:gap-10">
-            {/* Gallery */}
-            <div className="space-y-3 sm:space-y-4">
-              <div className="group relative overflow-hidden rounded-3xl border border-white/80 bg-white shadow-large sm:rounded-[2rem] lg:rounded-[2rem]">
-                <div className="absolute inset-x-0 top-0 z-10 h-24 bg-gradient-to-b from-black/35 to-transparent sm:h-28" />
-                <div className="absolute inset-x-0 bottom-0 z-10 h-24 bg-gradient-to-t from-black/40 to-transparent sm:h-28" />
-
-                {currentPhoto ? (
-                  <img
-                    src={currentPhoto}
-                    alt={animal.name}
-                    className="aspect-[5/4] w-full object-cover transition duration-500 sm:aspect-square lg:aspect-[5/6]"
-                  />
-                ) : (
-                  <div className="flex aspect-[5/4] w-full items-center justify-center bg-slate-100 text-slate-400 sm:aspect-square">
-                    No photo available
-                  </div>
-                )}
-
-                {photos.length > 1 && (
-                  <>
-                    <button
-                      type="button"
-                      onClick={showPrev}
-                      aria-label="Previous photo"
-                      className="absolute left-2 top-1/2 z-20 flex h-9 w-9 -translate-y-1/2 items-center justify-center rounded-full bg-white/90 text-slate-700 shadow-medium backdrop-blur transition hover:scale-105 hover:bg-white sm:left-4 sm:h-10 sm:w-10"
-                    >
-                      ‹
-                    </button>
-                    <button
-                      type="button"
-                      onClick={showNext}
-                      aria-label="Next photo"
-                      className="absolute right-2 top-1/2 z-20 flex h-9 w-9 -translate-y-1/2 items-center justify-center rounded-full bg-white/90 text-slate-700 shadow-medium backdrop-blur transition hover:scale-105 hover:bg-white sm:right-4 sm:h-10 sm:w-10"
-                    >
-                      ›
-                    </button>
-                    <div className="absolute bottom-3 left-1/2 z-20 flex -translate-x-1/2 gap-1.5 sm:bottom-4">
-                      {photos.map((_, index) => (
-                        <button
-                          key={`dot-${index}`}
-                          type="button"
-                          aria-label={`Show photo ${index + 1}`}
-                          onClick={() => setActivePhoto(index)}
-                          className={`h-2 rounded-full transition-all ${
-                            index === activePhoto
-                              ? "w-6 bg-white"
-                              : "w-2 bg-white/55 hover:bg-white/80"
-                          }`}
-                        />
-                      ))}
-                    </div>
-                  </>
-                )}
-
-                <div className="absolute left-3 top-3 z-20 max-w-[75%] sm:left-5 sm:top-5 sm:max-w-[70%]">
-                  <p className="truncate text-xs font-medium text-white/90 drop-shadow sm:text-sm">
-                    {animal.animalType ?? "Pet"} · {animal.breed}
-                  </p>
-                  <h1 className="mt-1 truncate text-2xl font-bold tracking-tight text-white drop-shadow sm:text-4xl lg:hidden">
-                    {animal.name}
-                  </h1>
-                </div>
-              </div>
-
-              {photos.length > 1 && (
-                <div className="-mx-3 flex gap-2 overflow-x-auto px-3 pb-1 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden sm:mx-0 sm:px-0">
-                  {photos.map((photo, index) => (
-                    <button
-                      key={photo}
-                      type="button"
-                      onClick={() => setActivePhoto(index)}
-                      className={`relative h-16 w-16 shrink-0 overflow-hidden rounded-xl border-2 transition sm:h-24 sm:w-24 sm:rounded-2xl ${
-                        index === activePhoto
-                          ? "border-primary-500 shadow-medium"
-                          : "border-transparent opacity-80 hover:opacity-100"
-                      }`}
-                    >
-                      <img
-                        src={photo}
-                        alt={`${animal.name} photo ${index + 1}`}
-                        className="h-full w-full object-cover"
-                      />
-                    </button>
-                  ))}
-                </div>
-              )}
-            </div>
+          <section className="grid items-start gap-5 lg:grid-cols-[1.05fr_0.95fr] lg:gap-10">
+            {/* Gallery — photos get their own space, no text overlays */}
+            <PhotoGallery
+              photos={photos}
+              name={animal.name}
+              activePhoto={activePhoto}
+              onPhotoChange={setActivePhoto}
+            />
 
             {/* Details */}
-            <div className="relative z-10 -mt-5 space-y-4 sm:mt-0 sm:space-y-6 lg:mt-0">
-              <div className="rounded-t-[1.75rem] border border-white/80 bg-white/95 p-4 shadow-large backdrop-blur sm:rounded-[2rem] sm:p-8">
-                <div className="hidden lg:block">
-                  <p className="text-sm font-semibold uppercase tracking-[0.18em] text-primary-600">
-                    {animal.animalType ?? "Pet"}
-                  </p>
-                  <h1 className="mt-2 bg-gradient-to-r from-primary-700 via-secondary-600 to-accent-600 bg-clip-text text-5xl font-bold tracking-tight text-transparent">
-                    {animal.name}
-                  </h1>
-                </div>
+            <div className="space-y-4 sm:space-y-6">
+              <div className="rounded-[1.75rem] border border-white/80 bg-white/95 p-4 shadow-large backdrop-blur sm:rounded-[2rem] sm:p-8">
+                <p className="text-xs font-semibold uppercase tracking-[0.16em] text-primary-600 sm:text-sm sm:tracking-[0.18em]">
+                  {animal.animalType ?? "Pet"}
+                </p>
+                <h1 className="mt-1.5 bg-gradient-to-r from-primary-700 via-secondary-600 to-accent-600 bg-clip-text text-3xl font-bold tracking-tight text-transparent sm:mt-2 sm:text-4xl lg:text-5xl">
+                  {animal.name}
+                </h1>
 
-                <p className="mt-0 text-sm leading-6 text-slate-600 sm:mt-3 sm:text-lg sm:leading-7">
-                  <span className="font-medium text-slate-800">{animal.breed}</span>
+                <p className="mt-2 text-sm leading-6 text-slate-600 sm:mt-3 sm:text-lg sm:leading-7">
+                  <span className="font-medium text-slate-800">
+                    {animal.breed}
+                  </span>
                   {orgLocation ? (
                     <>
                       <span className="mx-1.5 text-slate-300 sm:mx-2">·</span>
@@ -349,6 +262,162 @@ export default function PetDetails() {
         </div>
       </main>
     </>
+  );
+}
+
+function PhotoGallery({
+  photos,
+  name,
+  activePhoto,
+  onPhotoChange,
+}: {
+  photos: string[];
+  name: string;
+  activePhoto: number;
+  onPhotoChange: (index: number) => void;
+}) {
+  const scrollerRef = useRef<HTMLDivElement>(null);
+  const syncFromScroll = useRef(false);
+  const hasPhotos = photos.length > 0;
+  const hasMultiple = photos.length > 1;
+
+  // Keep the snap carousel aligned when thumbnails / arrows change the index.
+  useEffect(() => {
+    const scroller = scrollerRef.current;
+    if (!scroller || syncFromScroll.current) {
+      syncFromScroll.current = false;
+      return;
+    }
+    const slide = scroller.children[activePhoto] as HTMLElement | undefined;
+    if (!slide) return;
+    scroller.scrollTo({ left: slide.offsetLeft, behavior: "smooth" });
+  }, [activePhoto]);
+
+  const handleScroll = () => {
+    const scroller = scrollerRef.current;
+    if (!scroller || scroller.clientWidth === 0) return;
+    const next = Math.round(scroller.scrollLeft / scroller.clientWidth);
+    const clamped = Math.max(0, Math.min(photos.length - 1, next));
+    if (clamped !== activePhoto) {
+      syncFromScroll.current = true;
+      onPhotoChange(clamped);
+    }
+  };
+
+  const showPrev = () =>
+    onPhotoChange(activePhoto === 0 ? photos.length - 1 : activePhoto - 1);
+  const showNext = () =>
+    onPhotoChange(
+      activePhoto === photos.length - 1 ? 0 : activePhoto + 1
+    );
+
+  return (
+    <div className="space-y-3 sm:space-y-4">
+      <div className="overflow-hidden rounded-3xl border border-white/80 bg-slate-100 shadow-large sm:rounded-[2rem]">
+        {hasPhotos ? (
+          <div className="relative">
+            {/* Native swipe carousel on touch devices */}
+            <div
+              ref={scrollerRef}
+              onScroll={handleScroll}
+              className="flex aspect-[4/5] snap-x snap-mandatory overflow-x-auto overscroll-x-contain scroll-smooth [-ms-overflow-style:none] [scrollbar-width:none] sm:aspect-square lg:aspect-[5/6] [&::-webkit-scrollbar]:hidden"
+              aria-label={`${name} photo gallery`}
+              role="region"
+            >
+              {photos.map((photo, index) => (
+                <div
+                  key={photo}
+                  className="flex h-full w-full shrink-0 snap-center snap-always items-center justify-center bg-slate-100"
+                >
+                  <img
+                    src={photo}
+                    alt={`${name} photo ${index + 1} of ${photos.length}`}
+                    draggable={false}
+                    className="h-full w-full object-contain select-none"
+                  />
+                </div>
+              ))}
+            </div>
+
+            {/* Desktop / tablet arrows only — mobile uses finger swipe */}
+            {hasMultiple && (
+              <>
+                <button
+                  type="button"
+                  onClick={showPrev}
+                  aria-label="Previous photo"
+                  className="absolute left-3 top-1/2 z-10 hidden h-10 w-10 -translate-y-1/2 items-center justify-center rounded-full bg-white/95 text-slate-700 shadow-medium backdrop-blur transition hover:scale-105 hover:bg-white sm:flex"
+                >
+                  ‹
+                </button>
+                <button
+                  type="button"
+                  onClick={showNext}
+                  aria-label="Next photo"
+                  className="absolute right-3 top-1/2 z-10 hidden h-10 w-10 -translate-y-1/2 items-center justify-center rounded-full bg-white/95 text-slate-700 shadow-medium backdrop-blur transition hover:scale-105 hover:bg-white sm:flex"
+                >
+                  ›
+                </button>
+              </>
+            )}
+          </div>
+        ) : (
+          <div className="flex aspect-[4/5] w-full items-center justify-center bg-slate-100 text-slate-400 sm:aspect-square">
+            No photo available
+          </div>
+        )}
+      </div>
+
+      {hasMultiple && (
+        <>
+          <div className="flex items-center justify-between gap-3 px-0.5">
+            <p className="text-xs font-medium text-slate-500 sm:text-sm">
+              Photo {activePhoto + 1} of {photos.length}
+              <span className="ml-2 text-slate-400 sm:hidden">· swipe</span>
+            </p>
+            <div className="flex gap-1.5">
+              {photos.map((_, index) => (
+                <button
+                  key={`dot-${index}`}
+                  type="button"
+                  aria-label={`Show photo ${index + 1}`}
+                  aria-current={index === activePhoto}
+                  onClick={() => onPhotoChange(index)}
+                  className={`h-2 rounded-full transition-all ${
+                    index === activePhoto
+                      ? "w-5 bg-primary-500"
+                      : "w-2 bg-slate-300 hover:bg-slate-400"
+                  }`}
+                />
+              ))}
+            </div>
+          </div>
+
+          <div className="flex gap-2.5 overflow-x-auto pb-1 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
+            {photos.map((photo, index) => (
+              <button
+                key={`thumb-${photo}`}
+                type="button"
+                onClick={() => onPhotoChange(index)}
+                aria-label={`View photo ${index + 1}`}
+                aria-current={index === activePhoto}
+                className={`relative h-[4.25rem] w-[4.25rem] shrink-0 overflow-hidden rounded-xl border-2 bg-slate-100 transition sm:h-24 sm:w-24 sm:rounded-2xl ${
+                  index === activePhoto
+                    ? "border-primary-500 shadow-medium"
+                    : "border-transparent opacity-75 hover:opacity-100"
+                }`}
+              >
+                <img
+                  src={photo}
+                  alt=""
+                  className="h-full w-full object-cover"
+                />
+              </button>
+            ))}
+          </div>
+        </>
+      )}
+    </div>
   );
 }
 
