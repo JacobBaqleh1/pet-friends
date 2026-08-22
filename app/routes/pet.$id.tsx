@@ -28,6 +28,21 @@ export async function loader({ params }: LoaderFunctionArgs) {
   return json({ animal });
 }
 
+/** Petfinder descriptions are often ALL CAPS — soften for mobile readability. */
+function formatDescription(text: string) {
+  const letters = text.replace(/[^a-zA-Z]/g, "");
+  if (letters.length < 24) return text;
+
+  const upperRatio =
+    letters.replace(/[^A-Z]/g, "").length / Math.max(letters.length, 1);
+  if (upperRatio < 0.7) return text;
+
+  const lowered = text.toLowerCase();
+  return lowered.replace(/(^\s*[a-z])|([.!?]\s+[a-z])/g, (match) =>
+    match.toUpperCase()
+  );
+}
+
 export default function PetDetails() {
   const { animal } = useLoaderData<typeof loader>();
   const [activePhoto, setActivePhoto] = useState(0);
@@ -42,6 +57,10 @@ export default function PetDetails() {
     .join(", ");
   const hasContact =
     Boolean(animal.organization.email) || Boolean(animal.organization.phone);
+  const aboutText =
+    animal.description?.trim()
+      ? formatDescription(animal.description.trim())
+      : `${animal.name} is a ${animal.age.toLowerCase()} ${animal.breed.toLowerCase()} looking for a loving home. Browse their photos here, then reach out through Petfinder to start the adoption conversation.`;
 
   const showPrev = () =>
     setActivePhoto((index) => (index === 0 ? photos.length - 1 : index - 1));
@@ -51,18 +70,18 @@ export default function PetDetails() {
   return (
     <>
       <Navbar />
-      <main className="relative min-h-screen overflow-hidden bg-gradient-to-br from-slate-50 via-primary-50/40 to-secondary-50/30 pb-28 sm:pb-12">
+      <main className="relative min-h-screen overflow-x-hidden bg-gradient-to-br from-slate-50 via-primary-50/40 to-secondary-50/30 pb-[calc(5.5rem+env(safe-area-inset-bottom))] sm:pb-12">
         <div
-          className="pointer-events-none absolute -top-24 left-1/2 h-72 w-[36rem] -translate-x-1/2 rounded-full bg-gradient-to-r from-primary-300/30 via-secondary-300/20 to-accent-300/20 blur-3xl"
+          className="pointer-events-none absolute -top-24 left-1/2 h-72 w-[min(100vw,36rem)] -translate-x-1/2 rounded-full bg-gradient-to-r from-primary-300/30 via-secondary-300/20 to-accent-300/20 blur-3xl"
           aria-hidden="true"
         />
 
-        <div className="relative mx-auto max-w-6xl px-4 py-5 sm:px-6 sm:py-8 lg:px-8">
-          <div className="mb-5 flex items-center justify-between gap-3 sm:mb-8">
+        <div className="relative mx-auto max-w-6xl px-3 py-4 sm:px-6 sm:py-8 lg:px-8">
+          <div className="mb-4 flex items-center justify-between gap-3 sm:mb-8">
             <button
               type="button"
               onClick={() => window.history.back()}
-              className="inline-flex items-center gap-2 rounded-full border border-white/70 bg-white/80 px-4 py-2 text-sm font-medium text-slate-600 shadow-soft backdrop-blur transition hover:bg-white hover:text-primary-700"
+              className="inline-flex items-center gap-2 rounded-full border border-white/70 bg-white/80 px-3.5 py-2 text-sm font-medium text-slate-600 shadow-soft backdrop-blur transition hover:bg-white hover:text-primary-700 sm:px-4"
             >
               <span aria-hidden="true">←</span>
               <span>Back</span>
@@ -72,21 +91,21 @@ export default function PetDetails() {
             </span>
           </div>
 
-          <section className="grid items-start gap-6 lg:grid-cols-[1.05fr_0.95fr] lg:gap-10">
+          <section className="grid items-start gap-0 lg:grid-cols-[1.05fr_0.95fr] lg:gap-10">
             {/* Gallery */}
-            <div className="space-y-4">
-              <div className="group relative overflow-hidden rounded-[1.75rem] border border-white/80 bg-white shadow-large sm:rounded-[2rem]">
-                <div className="absolute inset-x-0 top-0 z-10 h-28 bg-gradient-to-b from-black/35 to-transparent" />
-                <div className="absolute inset-x-0 bottom-0 z-10 h-28 bg-gradient-to-t from-black/40 to-transparent" />
+            <div className="space-y-3 sm:space-y-4">
+              <div className="group relative overflow-hidden rounded-3xl border border-white/80 bg-white shadow-large sm:rounded-[2rem] lg:rounded-[2rem]">
+                <div className="absolute inset-x-0 top-0 z-10 h-24 bg-gradient-to-b from-black/35 to-transparent sm:h-28" />
+                <div className="absolute inset-x-0 bottom-0 z-10 h-24 bg-gradient-to-t from-black/40 to-transparent sm:h-28" />
 
                 {currentPhoto ? (
                   <img
                     src={currentPhoto}
                     alt={animal.name}
-                    className="aspect-[4/5] w-full object-cover transition duration-500 sm:aspect-square lg:aspect-[5/6]"
+                    className="aspect-[5/4] w-full object-cover transition duration-500 sm:aspect-square lg:aspect-[5/6]"
                   />
                 ) : (
-                  <div className="flex aspect-[4/5] w-full items-center justify-center bg-slate-100 text-slate-400 sm:aspect-square">
+                  <div className="flex aspect-[5/4] w-full items-center justify-center bg-slate-100 text-slate-400 sm:aspect-square">
                     No photo available
                   </div>
                 )}
@@ -97,7 +116,7 @@ export default function PetDetails() {
                       type="button"
                       onClick={showPrev}
                       aria-label="Previous photo"
-                      className="absolute left-3 top-1/2 z-20 flex h-10 w-10 -translate-y-1/2 items-center justify-center rounded-full bg-white/90 text-slate-700 shadow-medium backdrop-blur transition hover:scale-105 hover:bg-white sm:left-4"
+                      className="absolute left-2 top-1/2 z-20 flex h-9 w-9 -translate-y-1/2 items-center justify-center rounded-full bg-white/90 text-slate-700 shadow-medium backdrop-blur transition hover:scale-105 hover:bg-white sm:left-4 sm:h-10 sm:w-10"
                     >
                       ‹
                     </button>
@@ -105,11 +124,11 @@ export default function PetDetails() {
                       type="button"
                       onClick={showNext}
                       aria-label="Next photo"
-                      className="absolute right-3 top-1/2 z-20 flex h-10 w-10 -translate-y-1/2 items-center justify-center rounded-full bg-white/90 text-slate-700 shadow-medium backdrop-blur transition hover:scale-105 hover:bg-white sm:right-4"
+                      className="absolute right-2 top-1/2 z-20 flex h-9 w-9 -translate-y-1/2 items-center justify-center rounded-full bg-white/90 text-slate-700 shadow-medium backdrop-blur transition hover:scale-105 hover:bg-white sm:right-4 sm:h-10 sm:w-10"
                     >
                       ›
                     </button>
-                    <div className="absolute bottom-4 left-1/2 z-20 flex -translate-x-1/2 gap-1.5">
+                    <div className="absolute bottom-3 left-1/2 z-20 flex -translate-x-1/2 gap-1.5 sm:bottom-4">
                       {photos.map((_, index) => (
                         <button
                           key={`dot-${index}`}
@@ -127,24 +146,24 @@ export default function PetDetails() {
                   </>
                 )}
 
-                <div className="absolute left-4 top-4 z-20 max-w-[70%] sm:left-5 sm:top-5">
-                  <p className="truncate text-sm font-medium text-white/90 drop-shadow">
+                <div className="absolute left-3 top-3 z-20 max-w-[75%] sm:left-5 sm:top-5 sm:max-w-[70%]">
+                  <p className="truncate text-xs font-medium text-white/90 drop-shadow sm:text-sm">
                     {animal.animalType ?? "Pet"} · {animal.breed}
                   </p>
-                  <h1 className="mt-1 truncate text-3xl font-bold tracking-tight text-white drop-shadow sm:text-4xl lg:hidden">
+                  <h1 className="mt-1 truncate text-2xl font-bold tracking-tight text-white drop-shadow sm:text-4xl lg:hidden">
                     {animal.name}
                   </h1>
                 </div>
               </div>
 
               {photos.length > 1 && (
-                <div className="-mx-1 flex gap-2 overflow-x-auto px-1 pb-1">
+                <div className="-mx-3 flex gap-2 overflow-x-auto px-3 pb-1 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden sm:mx-0 sm:px-0">
                   {photos.map((photo, index) => (
                     <button
                       key={photo}
                       type="button"
                       onClick={() => setActivePhoto(index)}
-                      className={`relative h-20 w-20 shrink-0 overflow-hidden rounded-2xl border-2 transition sm:h-24 sm:w-24 ${
+                      className={`relative h-16 w-16 shrink-0 overflow-hidden rounded-xl border-2 transition sm:h-24 sm:w-24 sm:rounded-2xl ${
                         index === activePhoto
                           ? "border-primary-500 shadow-medium"
                           : "border-transparent opacity-80 hover:opacity-100"
@@ -162,8 +181,8 @@ export default function PetDetails() {
             </div>
 
             {/* Details */}
-            <div className="space-y-5 sm:space-y-6">
-              <div className="rounded-[1.75rem] border border-white/80 bg-white/90 p-5 shadow-large backdrop-blur sm:rounded-[2rem] sm:p-8">
+            <div className="relative z-10 -mt-5 space-y-4 sm:mt-0 sm:space-y-6 lg:mt-0">
+              <div className="rounded-t-[1.75rem] border border-white/80 bg-white/95 p-4 shadow-large backdrop-blur sm:rounded-[2rem] sm:p-8">
                 <div className="hidden lg:block">
                   <p className="text-sm font-semibold uppercase tracking-[0.18em] text-primary-600">
                     {animal.animalType ?? "Pet"}
@@ -173,17 +192,17 @@ export default function PetDetails() {
                   </h1>
                 </div>
 
-                <p className="mt-1 text-base text-slate-600 sm:mt-3 sm:text-lg">
+                <p className="mt-0 text-sm leading-6 text-slate-600 sm:mt-3 sm:text-lg sm:leading-7">
                   <span className="font-medium text-slate-800">{animal.breed}</span>
                   {orgLocation ? (
                     <>
-                      <span className="mx-2 text-slate-300">·</span>
-                      <span>{orgLocation}</span>
+                      <span className="mx-1.5 text-slate-300 sm:mx-2">·</span>
+                      <span className="break-words">{orgLocation}</span>
                     </>
                   ) : null}
                 </p>
 
-                <div className="mt-5 grid grid-cols-2 gap-3 sm:mt-7 sm:grid-cols-4">
+                <div className="mt-4 grid grid-cols-2 gap-2.5 sm:mt-7 sm:grid-cols-4 sm:gap-3">
                   <Stat label="Age" value={animal.age} tone="primary" />
                   <Stat label="Size" value={animal.size} tone="secondary" />
                   <Stat
@@ -198,17 +217,16 @@ export default function PetDetails() {
                   />
                 </div>
 
-                <div className="mt-6 sm:mt-8">
+                <div className="mt-5 sm:mt-8">
                   <h2 className="text-lg font-bold text-slate-800 sm:text-xl">
                     About {animal.name}
                   </h2>
-                  <p className="mt-3 text-[15px] leading-7 text-slate-600 sm:text-base sm:leading-8">
-                    {animal.description ||
-                      `${animal.name} is a ${animal.age.toLowerCase()} ${animal.breed.toLowerCase()} looking for a loving home. Browse their photos here, then reach out through Petfinder to start the adoption conversation.`}
+                  <p className="mt-2.5 whitespace-pre-line break-words text-[15px] leading-7 text-slate-600 sm:mt-3 sm:text-base sm:leading-8">
+                    {aboutText}
                   </p>
                 </div>
 
-                <div className="mt-7 hidden gap-3 sm:mt-8 sm:flex sm:flex-col">
+                <div className="mt-6 hidden gap-3 sm:mt-8 sm:flex sm:flex-col">
                   <a
                     href={animal.petfinderUrl}
                     target="_blank"
@@ -231,35 +249,35 @@ export default function PetDetails() {
                 </div>
               </div>
 
-              <div className="rounded-[1.75rem] border border-white/80 bg-gradient-to-br from-white via-white to-primary-50/60 p-5 shadow-large sm:rounded-[2rem] sm:p-8">
-                <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
-                  <div>
+              <div className="rounded-[1.5rem] border border-white/80 bg-gradient-to-br from-white via-white to-primary-50/60 p-4 shadow-large sm:rounded-[2rem] sm:p-8">
+                <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between sm:gap-4">
+                  <div className="min-w-0">
                     <p className="text-xs font-semibold uppercase tracking-[0.16em] text-slate-500">
                       Organization
                     </p>
-                    <h2 className="mt-2 text-2xl font-bold text-slate-900">
+                    <h2 className="mt-2 break-words text-xl font-bold text-slate-900 sm:text-2xl">
                       {animal.organization.name ??
                         "Petfinder partner organization"}
                     </h2>
                     {(orgLocation || animal.organization.postalCode) && (
-                      <p className="mt-2 text-sm text-slate-600 sm:text-base">
+                      <p className="mt-2 break-words text-sm text-slate-600 sm:text-base">
                         {[orgLocation, animal.organization.postalCode]
                           .filter(Boolean)
                           .join(" · ")}
                       </p>
                     )}
                   </div>
-                  <div className="inline-flex w-fit items-center rounded-full bg-emerald-100 px-3 py-1 text-xs font-semibold text-emerald-700">
+                  <div className="inline-flex w-fit shrink-0 items-center rounded-full bg-emerald-100 px-3 py-1 text-xs font-semibold text-emerald-700">
                     Verified listing
                   </div>
                 </div>
 
                 {(hasContact || animal.organization.socialUrls.length > 0) && (
-                  <div className="mt-5 flex flex-col gap-2 sm:mt-6 sm:flex-row sm:flex-wrap">
+                  <div className="mt-4 flex flex-col gap-2 sm:mt-6 sm:flex-row sm:flex-wrap">
                     {animal.organization.email && (
                       <a
                         href={`mailto:${animal.organization.email}?subject=Interested in adopting ${animal.name}`}
-                        className="inline-flex items-center justify-center rounded-xl bg-primary-100 px-4 py-2.5 text-sm font-medium text-primary-800 transition hover:bg-primary-200"
+                        className="inline-flex max-w-full items-center justify-center break-all rounded-xl bg-primary-100 px-4 py-2.5 text-sm font-medium text-primary-800 transition hover:bg-primary-200"
                       >
                         {animal.organization.email}
                       </a>
@@ -286,7 +304,7 @@ export default function PetDetails() {
                   </div>
                 )}
 
-                <p className="mt-5 text-sm leading-6 text-slate-500">
+                <p className="mt-4 text-sm leading-6 text-slate-500 sm:mt-5">
                   Browse and learn about {animal.name} on Pet Friends. Final
                   adoption requests go through Petfinder so the shelter gets
                   your inquiry directly.
@@ -297,7 +315,7 @@ export default function PetDetails() {
         </div>
 
         {/* Mobile sticky adopt bar */}
-        <div className="fixed inset-x-0 bottom-0 z-40 border-t border-white/60 bg-white/90 p-3 shadow-[0_-10px_40px_rgba(15,23,42,0.12)] backdrop-blur sm:hidden">
+        <div className="fixed inset-x-0 bottom-0 z-40 border-t border-white/60 bg-white/95 px-3 pb-[max(0.75rem,env(safe-area-inset-bottom))] pt-3 shadow-[0_-10px_40px_rgba(15,23,42,0.12)] backdrop-blur sm:hidden">
           <div className="mx-auto flex max-w-lg items-center gap-3">
             <div className="min-w-0 flex-1">
               <p className="truncate text-sm font-semibold text-slate-900">
@@ -309,7 +327,7 @@ export default function PetDetails() {
               href={animal.petfinderUrl}
               target="_blank"
               rel="noreferrer"
-              className="inline-flex shrink-0 items-center justify-center rounded-xl bg-gradient-to-r from-primary-500 to-secondary-500 px-4 py-3 text-sm font-semibold text-white shadow-medium"
+              className="inline-flex shrink-0 items-center justify-center rounded-xl bg-gradient-to-r from-primary-500 to-secondary-500 px-5 py-3 text-sm font-semibold text-white shadow-medium"
             >
               Adopt
             </a>
@@ -338,12 +356,12 @@ function Stat({
 
   return (
     <div
-      className={`rounded-2xl border px-3 py-3 text-center shadow-soft sm:px-3.5 sm:py-3.5 ${tones[tone]}`}
+      className={`min-w-0 rounded-2xl border px-2.5 py-3 text-center shadow-soft sm:px-3.5 sm:py-3.5 ${tones[tone]}`}
     >
-      <p className="text-[11px] font-semibold uppercase tracking-[0.14em] opacity-70">
+      <p className="text-[10px] font-semibold uppercase tracking-[0.12em] opacity-70 sm:text-[11px] sm:tracking-[0.14em]">
         {label}
       </p>
-      <p className="mt-1 text-sm font-bold leading-tight sm:text-[15px]">
+      <p className="mt-1 break-words text-sm font-bold leading-snug sm:text-[15px] sm:leading-tight">
         {value}
       </p>
     </div>
