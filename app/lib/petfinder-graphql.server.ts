@@ -296,6 +296,17 @@ function firstContactValue(
   return null;
 }
 
+export type AnimalSearchFilters = {
+  age?: string | null;
+  sex?: string | null;
+  size?: string | null;
+  color?: string | null;
+  coatLength?: string | null;
+  houseTrained?: boolean | null;
+  specialNeeds?: boolean | null;
+  declawed?: boolean | null;
+};
+
 export async function searchAnimalsNearPoint(options: {
   latitude: number;
   longitude: number;
@@ -303,6 +314,7 @@ export async function searchAnimalsNearPoint(options: {
   petType?: string | null;
   page?: number;
   limit?: number;
+  filters?: AnimalSearchFilters;
 }): Promise<PetSearchResult> {
   const page = Math.max(1, options.page ?? 1);
   const limit = Math.min(48, Math.max(1, options.limit ?? 12));
@@ -319,6 +331,22 @@ export async function searchAnimalsNearPoint(options: {
 
   if (options.petType) {
     filters.animal_type = [options.petType.toLowerCase()];
+  }
+
+  const extra = options.filters;
+  if (extra?.age) filters.age = [extra.age];
+  if (extra?.sex) filters.sex = [extra.sex];
+  if (extra?.size) filters.size = [extra.size];
+  if (extra?.color) filters.colors = [extra.color];
+  if (extra?.coatLength) filters.coat_length = [extra.coatLength];
+  if (typeof extra?.houseTrained === "boolean") {
+    filters.house_trained = extra.houseTrained;
+  }
+  if (typeof extra?.specialNeeds === "boolean") {
+    filters.special_needs = extra.specialNeeds;
+  }
+  if (typeof extra?.declawed === "boolean") {
+    filters.declawed = extra.declawed;
   }
 
   const data = await petfinderGraphql<{

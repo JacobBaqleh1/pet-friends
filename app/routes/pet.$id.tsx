@@ -276,146 +276,179 @@ function PhotoGallery({
   activePhoto: number;
   onPhotoChange: (index: number) => void;
 }) {
-  const scrollerRef = useRef<HTMLDivElement>(null);
-  const syncFromScroll = useRef(false);
+  const trackRef = useRef<HTMLDivElement>(null);
   const dragRef = useRef<{
     pointerId: number;
     startX: number;
-    startScroll: number;
-    moved: boolean;
+    startY: number;
+    width: number;
+    dragging: boolean;
+    axis: "undecided" | "horizontal" | "vertical";
   } | null>(null);
+  const [dragOffset, setDragOffset] = useState(0);
+  const [isDragging, setIsDragging] = useState(false);
   const hasPhotos = photos.length > 0;
   const hasMultiple = photos.length > 1;
 
-  // Keep the snap carousel aligned when thumbnails / arrows change the index.
   useEffect(() => {
-    const scroller = scrollerRef.current;
-    if (!scroller || syncFromScroll.current) {
-      syncFromScroll.current = false;
-      return;
-    }
-    const slide = scroller.children[activePhoto] as HTMLElement | undefined;
-    if (!slide) return;
-    scroller.scrollTo({ left: slide.offsetLeft, behavior: "smooth" });
+    setDragOffset(0);
+    setIsDragging(false);
   }, [activePhoto]);
 
-  const handleScroll = () => {
-    const scroller = scrollerRef.current;
-    if (!scroller || scroller.clientWidth === 0) return;
-    const next = Math.round(scroller.scrollLeft / scroller.clientWidth);
-    const clamped = Math.max(0, Math.min(photos.length - 1, next));
-    if (clamped !== activePhoto) {
-      syncFromScroll.current = true;
-      onPhotoChange(clamped);
-    }
-  };
-
-  const endDrag = (event: React.PointerEvent<HTMLDivElement>) => {
+  const finishDrag = (clientX: number) => {
     const drag = dragRef.current;
-    const scroller = scrollerRef.current;
-    if (!drag || !scroller || drag.pointerId !== event.pointerId) return;
-
-    try {
-      scroller.releasePointerCapture(event.pointerId);
-    } catch {
-      // Pointer may already be released.
-    }
-
-    const delta = drag.startX - event.clientX;
-    const threshold = Math.min(80, scroller.clientWidth * 0.18);
-    let next = activePhoto;
-    if (drag.moved && Math.abs(delta) > threshold) {
-      next =
-        delta > 0
-          ? Math.min(photos.length - 1, activePhoto + 1)
-          : Math.max(0, activePhoto - 1);
-    }
-
     dragRef.current = null;
-    scroller.classList.remove("cursor-grabbing");
-    onPhotoChange(next);
-    const slide = scroller.children[next] as HTMLElement | undefined;
-    if (slide) {
-      scroller.scrollTo({ left: slide.offsetLeft, behavior: "smooth" });
+    if (!drag || drag.axis !== "horizontal") {
+      setDragOffset(0);
+      setIsDragging(false);
+      return;
+    }
+
+    const deltaX = clientX - drag.startX;
+    const threshold = Math.max(40, drag.width * 0.15);
+    let next = activePhoto;
+
+    // Swipe left (negative) → next; swipe right (positive) → previous
+    if (Math.abs(deltaX) >= threshold) {
+      if (deltaX < 0 && activePhoto < photos.length - 1) {
+        next = activePhoto + 1;
+      } else if (deltaX > 0 && activePhoto > 0) {
+        next = activePhoto - 1;
+      }
+    }
+
+    setIsDragging(false);
+    setDragOffset(0);
+    if (next !== activePhoto) {
+      onPhotoChange(next);
     }
   };
 
-  const showPrev = () =>
-    onPhotoChange(activePhoto === 0 ? photos.length - 1 : activePhoto - 1);
-  const showNext = () =>
-    onPhotoChange(
-      activePhoto === photos.length - 1 ? 0 : activePhoto + 1
-    );
+  const showPrev = () => {
+    if (activePhoto > 0) onPhotoChange(activePhoto - 1);
+  };
+  const showNext = () => {
+    if (activePhoto < photos.length - 1) onPhotoChange(activePhoto + 1);
+  };
 
   return (
     <div className="min-w-0 space-y-3 sm:space-y-4">
       <div className="overflow-hidden rounded-3xl border border-white/80 bg-slate-100 shadow-large sm:rounded-[2rem]">
         {hasPhotos ? (
           <div className="relative min-w-0 overflow-hidden">
-            {/* Swipe / drag carousel — finger on mobile, pointer drag everywhere */}
             <div
-              ref={scrollerRef}
-              onScroll={handleScroll}
+              ref={trackRef}
               onPointerDown={(event) => {
                 if (!hasMultiple || event.button !== 0) return;
-                const scroller = scrollerRef.current;
-                if (!scroller) return;
+                const width = trackRef.current?.clientWidth ?? 1;
                 dragRef.current = {
                   pointerId: event.pointerId,
                   startX: event.clientX,
-                  startScroll: scroller.scrollLeft,
-                  moved: false,
+                  startY: event.clientY,
+                  width,
+                  dragging: false,
+                  axis: "undecided",
                 };
-                scroller.setPointerCapture(event.pointerId);
-                scroller.classList.add("cursor-grabbing");
               }}
               onPointerMove={(event) => {
                 const drag = dragRef.current;
-                const scroller = scrollerRef.current;
-                if (!drag || !scroller || drag.pointerId !== event.pointerId) {
-                  return;
+                if (!drag || drag.pointerId !== event.pointerId) return;
+
+                const deltaX = event.clientX - drag.startX;
+                const deltaY = event.clientY - drag.startY;
+
+                if (drag.axis === "undecided") {
+                  if (Math.abs(deltaX) < 8 && Math.abs(deltaY) < 8) return;
+                  drag.axis =
+                    Math.abs(deltaX) >= Math.abs(deltaY)
+                      ? "horizontal"
+                      : "vertical";
+                  if (drag.axis === "vertical") {
+                    dragRef.current = null;
+                    return;
+                  }
+                  drag.dragging = true;
+                  setIsDragging(true);
+                  try {
+                    event.currentTarget.setPointerCapture(event.pointerId);
+                  } catch {
+                    // ignore
+                  }
                 }
-                const delta = event.clientX - drag.startX;
-                if (Math.abs(delta) > 6) drag.moved = true;
-                scroller.scrollLeft = drag.startScroll - delta;
+
+                if (drag.axis !== "horizontal") return;
+                event.preventDefault();
+
+                let offset = deltaX;
+                if (
+                  (activePhoto === 0 && offset > 0) ||
+                  (activePhoto === photos.length - 1 && offset < 0)
+                ) {
+                  offset *= 0.35;
+                }
+                setDragOffset(offset);
               }}
-              onPointerUp={endDrag}
-              onPointerCancel={endDrag}
-              className="flex aspect-[5/4] max-w-full touch-pan-y snap-x snap-mandatory overflow-x-auto overscroll-x-contain scroll-smooth [-ms-overflow-style:none] [scrollbar-width:none] sm:aspect-square lg:aspect-[5/6] [&::-webkit-scrollbar]:hidden cursor-grab active:cursor-grabbing"
+              onPointerUp={(event) => {
+                if (dragRef.current?.pointerId !== event.pointerId) return;
+                try {
+                  event.currentTarget.releasePointerCapture(event.pointerId);
+                } catch {
+                  // ignore
+                }
+                finishDrag(event.clientX);
+              }}
+              onPointerCancel={(event) => {
+                if (dragRef.current?.pointerId !== event.pointerId) return;
+                finishDrag(event.clientX);
+              }}
+              style={{ touchAction: isDragging ? "none" : "pan-y" }}
+              className="relative aspect-[5/4] max-w-full cursor-grab active:cursor-grabbing sm:aspect-square lg:aspect-[5/6]"
               aria-label={`${name} photo gallery`}
               role="region"
             >
-              {photos.map((photo, index) => (
-                <div
-                  key={photo}
-                  className="flex h-full w-full min-w-full max-w-full shrink-0 basis-full snap-center snap-always items-center justify-center bg-slate-100"
-                >
-                  <img
-                    src={photo}
-                    alt={`${name} photo ${index + 1} of ${photos.length}`}
-                    draggable={false}
-                    className="pointer-events-none max-h-full max-w-full object-contain select-none"
-                  />
-                </div>
-              ))}
+              <div
+                className="flex h-full w-full"
+                style={{
+                  transform: `translateX(calc(${-activePhoto * 100}% + ${dragOffset}px))`,
+                  transition: isDragging
+                    ? "none"
+                    : "transform 280ms cubic-bezier(0.22, 1, 0.36, 1)",
+                  willChange: "transform",
+                }}
+              >
+                {photos.map((photo, index) => (
+                  <div
+                    key={photo}
+                    className="flex h-full w-full shrink-0 basis-full items-center justify-center bg-slate-100"
+                  >
+                    <img
+                      src={photo}
+                      alt={`${name} photo ${index + 1} of ${photos.length}`}
+                      draggable={false}
+                      className="pointer-events-none max-h-full max-w-full object-contain select-none"
+                    />
+                  </div>
+                ))}
+              </div>
             </div>
 
-            {/* Desktop / tablet arrows only — mobile uses finger swipe */}
             {hasMultiple && (
               <>
                 <button
                   type="button"
                   onClick={showPrev}
+                  disabled={activePhoto === 0}
                   aria-label="Previous photo"
-                  className="absolute left-3 top-1/2 z-10 hidden h-10 w-10 -translate-y-1/2 items-center justify-center rounded-full bg-white/95 text-slate-700 shadow-medium backdrop-blur transition hover:scale-105 hover:bg-white sm:flex"
+                  className="absolute left-2 top-1/2 z-10 flex h-9 w-9 -translate-y-1/2 items-center justify-center rounded-full bg-white/95 text-slate-700 shadow-medium backdrop-blur transition hover:scale-105 hover:bg-white disabled:pointer-events-none disabled:opacity-0 sm:left-3 sm:h-10 sm:w-10"
                 >
                   ‹
                 </button>
                 <button
                   type="button"
                   onClick={showNext}
+                  disabled={activePhoto === photos.length - 1}
                   aria-label="Next photo"
-                  className="absolute right-3 top-1/2 z-10 hidden h-10 w-10 -translate-y-1/2 items-center justify-center rounded-full bg-white/95 text-slate-700 shadow-medium backdrop-blur transition hover:scale-105 hover:bg-white sm:flex"
+                  className="absolute right-2 top-1/2 z-10 flex h-9 w-9 -translate-y-1/2 items-center justify-center rounded-full bg-white/95 text-slate-700 shadow-medium backdrop-blur transition hover:scale-105 hover:bg-white disabled:pointer-events-none disabled:opacity-0 sm:right-3 sm:h-10 sm:w-10"
                 >
                   ›
                 </button>
