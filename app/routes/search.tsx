@@ -123,11 +123,9 @@ export default function SearchResults() {
             <>
               <div className="grid gap-8 grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 mb-12">
                 {animals.map((animal) => (
-                  <a
+                  <Link
                     key={animal.id}
-                    href={animal.petfinderUrl}
-                    target="_blank"
-                    rel="noreferrer"
+                    to={`/pet/${animal.id}`}
                     className="group bg-white rounded-3xl shadow-soft hover:shadow-medium transform hover:-translate-y-2 transition-all duration-300 overflow-hidden border border-gray-100"
                   >
                     <div className="relative overflow-hidden aspect-square">
@@ -154,10 +152,10 @@ export default function SearchResults() {
                         </span>
                       </div>
                       <p className="mt-4 text-sm font-medium text-primary-600">
-                        View on Petfinder →
+                        Meet {animal.name} →
                       </p>
                     </div>
-                  </a>
+                  </Link>
                 ))}
               </div>
 
