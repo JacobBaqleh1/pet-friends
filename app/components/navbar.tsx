@@ -23,7 +23,7 @@ export default function Navbar() {
           <div className="hidden md:flex items-center space-x-8">
 
             <NavLink
-              to="/pets"
+              to="/dashboard"
               className={({ isActive }) =>
                 `px-3 py-2 rounded-lg text-sm font-medium transition-colors duration-200 ${isActive
                   ? "text-primary-600 bg-primary-50"
@@ -31,7 +31,7 @@ export default function Navbar() {
                 }`
               }
             >
-              Browse Pets
+              Search Near You
             </NavLink>
 
           </div>

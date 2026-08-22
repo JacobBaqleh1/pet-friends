@@ -1,36 +1,41 @@
 # Pet Friends built with Remix
 
-Pet Friends helps people discover adoptable pets from Petfinder partner organizations.
+Pet Friends helps people discover adoptable pets near them using Petfinder data.
 
-## Petfinder Widget Setup
+## How search works
 
-Petfinder retired their public API in December 2025. This app now embeds Petfinder's **Custom Pet List Widget**.
+Petfinder retired their public OAuth API in December 2025. Their official **Custom Pet List Widget** only supports a fixed list of organization IDs — it cannot take a user's town or zipcode.
 
-1. Sign in at [Petfinder's widget setup page](https://www.petfinder.com/tools-widgets/custom-pet-list/getting-started/)
-2. Configure your organizations, animal types, and display options
-3. Click **Generate Pet List Code** and copy the `organization` value from the snippet
-4. Copy `.env.example` to `.env` and set `PETFINDER_ORGANIZATION_IDS`
-5. Add the same environment variable in your Vercel project settings for production
+This app restores location search by:
 
-Example:
+1. Geocoding the user's zipcode or `"City, ST"` (Zippopotam.us)
+2. Querying Petfinder's public GraphQL endpoint (the same API the widget uses) with a `point` + distance filter
+3. Linking each result to the pet's page on Petfinder.com (where the shelter/org lives)
 
-```env
-PETFINDER_ORGANIZATION_IDS=["NY123","CA456"]
-```
+The optional `/pets` page still embeds Petfinder's official widget for featured shelters.
 
 ## Quick Start
 
 ```bash
 npm install
 cp .env.example .env
-# Edit .env with your Petfinder organization IDs
 npm run dev
 ```
 
-Open [http://localhost:3000/pets](http://localhost:3000/pets) to browse adoptable pets.
+Open [http://localhost:3000/dashboard](http://localhost:3000/dashboard) and search by zipcode or town.
+
+## Optional widget config
+
+Generate a widget at [Petfinder's setup page](https://www.petfinder.com/tools-widgets/custom-pet-list/getting-started/) if you want `/pets` to feature specific organizations:
+
+```env
+PETFINDER_ORGANIZATION_IDS=["NY123","CA456"]
+PETFINDER_LIMIT=12
+PETFINDER_HIDE_BREED=true
+```
 
 ## Scripts
 
-- `npm run dev` — start the development server
-- `npm run build` — create a production build
-- `npm run start` — serve the production build
+- `npm run dev` — development server
+- `npm run build` — production build
+- `npm run start` — serve production build

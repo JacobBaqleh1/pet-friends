@@ -36,9 +36,7 @@ function loadPetfinderScript(scriptUrl: string): Promise<void> {
 }
 
 function setJsonAttribute(element: HTMLElement, name: string, values: string[]) {
-  if (values.length > 0) {
-    element.setAttribute(name, JSON.stringify(values));
-  }
+  element.setAttribute(name, JSON.stringify(values));
 }
 
 function createPetScroller(config: PetfinderWidgetConfig): HTMLElement {

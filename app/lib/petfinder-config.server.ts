@@ -22,6 +22,11 @@ function parseJsonArray(value: string | undefined, fallback: string[] = []): str
   }
 }
 
+/**
+ * Defaults match Petfinder's generated Custom Pet List Widget snippet.
+ * Organization IDs are optional — leave empty to show a national widget list,
+ * or set PETFINDER_ORGANIZATION_IDS to feature specific shelters.
+ */
 export function getPetfinderWidgetConfig(): PetfinderWidgetConfig {
   return {
     scriptUrl:
@@ -35,14 +40,10 @@ export function getPetfinderWidgetConfig(): PetfinderWidgetConfig {
     petfinderUrl: process.env.PETFINDER_URL ?? "https://www.petfinder.com/",
     organization: parseJsonArray(process.env.PETFINDER_ORGANIZATION_IDS),
     status: process.env.PETFINDER_STATUS ?? "adoptable",
-    limit: Number(process.env.PETFINDER_LIMIT ?? "24"),
-    hideBreed: process.env.PETFINDER_HIDE_BREED ?? "false",
+    limit: Number(process.env.PETFINDER_LIMIT ?? "12"),
+    hideBreed: process.env.PETFINDER_HIDE_BREED ?? "true",
     petListTitle: process.env.PETFINDER_LIST_TITLE ?? "",
     type: parseJsonArray(process.env.PETFINDER_TYPES),
     age: parseJsonArray(process.env.PETFINDER_AGES),
   };
-}
-
-export function isPetfinderWidgetConfigured(config: PetfinderWidgetConfig): boolean {
-  return config.organization.length > 0;
 }
