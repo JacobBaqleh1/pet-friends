@@ -348,10 +348,10 @@ function PhotoGallery({
     );
 
   return (
-    <div className="space-y-3 sm:space-y-4">
+    <div className="min-w-0 space-y-3 sm:space-y-4">
       <div className="overflow-hidden rounded-3xl border border-white/80 bg-slate-100 shadow-large sm:rounded-[2rem]">
         {hasPhotos ? (
-          <div className="relative">
+          <div className="relative min-w-0 overflow-hidden">
             {/* Swipe / drag carousel — finger on mobile, pointer drag everywhere */}
             <div
               ref={scrollerRef}
@@ -381,20 +381,20 @@ function PhotoGallery({
               }}
               onPointerUp={endDrag}
               onPointerCancel={endDrag}
-              className="flex aspect-[4/5] touch-pan-y snap-x snap-mandatory overflow-x-auto overscroll-x-contain scroll-smooth [-ms-overflow-style:none] [scrollbar-width:none] sm:aspect-square lg:aspect-[5/6] [&::-webkit-scrollbar]:hidden cursor-grab active:cursor-grabbing"
+              className="flex aspect-[5/4] max-w-full touch-pan-y snap-x snap-mandatory overflow-x-auto overscroll-x-contain scroll-smooth [-ms-overflow-style:none] [scrollbar-width:none] sm:aspect-square lg:aspect-[5/6] [&::-webkit-scrollbar]:hidden cursor-grab active:cursor-grabbing"
               aria-label={`${name} photo gallery`}
               role="region"
             >
               {photos.map((photo, index) => (
                 <div
                   key={photo}
-                  className="flex h-full w-full shrink-0 snap-center snap-always items-center justify-center bg-slate-100"
+                  className="flex h-full w-full min-w-full max-w-full shrink-0 basis-full snap-center snap-always items-center justify-center bg-slate-100"
                 >
                   <img
                     src={photo}
                     alt={`${name} photo ${index + 1} of ${photos.length}`}
                     draggable={false}
-                    className="pointer-events-none h-full w-full object-contain select-none"
+                    className="pointer-events-none max-h-full max-w-full object-contain select-none"
                   />
                 </div>
               ))}
@@ -423,7 +423,7 @@ function PhotoGallery({
             )}
           </div>
         ) : (
-          <div className="flex aspect-[4/5] w-full items-center justify-center bg-slate-100 text-slate-400 sm:aspect-square">
+          <div className="flex aspect-[5/4] w-full items-center justify-center bg-slate-100 text-slate-400 sm:aspect-square">
             No photo available
           </div>
         )}
@@ -434,7 +434,6 @@ function PhotoGallery({
           <div className="flex items-center justify-between gap-3 px-0.5">
             <p className="text-xs font-medium text-slate-500 sm:text-sm">
               Photo {activePhoto + 1} of {photos.length}
-              <span className="ml-2 text-slate-400 sm:hidden">· swipe</span>
             </p>
             <div className="flex gap-1.5">
               {photos.map((_, index) => (
