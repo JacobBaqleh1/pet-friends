@@ -278,6 +278,12 @@ function PhotoGallery({
 }) {
   const scrollerRef = useRef<HTMLDivElement>(null);
   const syncFromScroll = useRef(false);
+  const dragRef = useRef<{
+    pointerId: number;
+    startX: number;
+    startScroll: number;
+    moved: boolean;
+  } | null>(null);
   const hasPhotos = photos.length > 0;
   const hasMultiple = photos.length > 1;
 
@@ -304,6 +310,36 @@ function PhotoGallery({
     }
   };
 
+  const endDrag = (event: React.PointerEvent<HTMLDivElement>) => {
+    const drag = dragRef.current;
+    const scroller = scrollerRef.current;
+    if (!drag || !scroller || drag.pointerId !== event.pointerId) return;
+
+    try {
+      scroller.releasePointerCapture(event.pointerId);
+    } catch {
+      // Pointer may already be released.
+    }
+
+    const delta = drag.startX - event.clientX;
+    const threshold = Math.min(80, scroller.clientWidth * 0.18);
+    let next = activePhoto;
+    if (drag.moved && Math.abs(delta) > threshold) {
+      next =
+        delta > 0
+          ? Math.min(photos.length - 1, activePhoto + 1)
+          : Math.max(0, activePhoto - 1);
+    }
+
+    dragRef.current = null;
+    scroller.classList.remove("cursor-grabbing");
+    onPhotoChange(next);
+    const slide = scroller.children[next] as HTMLElement | undefined;
+    if (slide) {
+      scroller.scrollTo({ left: slide.offsetLeft, behavior: "smooth" });
+    }
+  };
+
   const showPrev = () =>
     onPhotoChange(activePhoto === 0 ? photos.length - 1 : activePhoto - 1);
   const showNext = () =>
@@ -316,11 +352,36 @@ function PhotoGallery({
       <div className="overflow-hidden rounded-3xl border border-white/80 bg-slate-100 shadow-large sm:rounded-[2rem]">
         {hasPhotos ? (
           <div className="relative">
-            {/* Native swipe carousel on touch devices */}
+            {/* Swipe / drag carousel — finger on mobile, pointer drag everywhere */}
             <div
               ref={scrollerRef}
               onScroll={handleScroll}
-              className="flex aspect-[4/5] snap-x snap-mandatory overflow-x-auto overscroll-x-contain scroll-smooth [-ms-overflow-style:none] [scrollbar-width:none] sm:aspect-square lg:aspect-[5/6] [&::-webkit-scrollbar]:hidden"
+              onPointerDown={(event) => {
+                if (!hasMultiple || event.button !== 0) return;
+                const scroller = scrollerRef.current;
+                if (!scroller) return;
+                dragRef.current = {
+                  pointerId: event.pointerId,
+                  startX: event.clientX,
+                  startScroll: scroller.scrollLeft,
+                  moved: false,
+                };
+                scroller.setPointerCapture(event.pointerId);
+                scroller.classList.add("cursor-grabbing");
+              }}
+              onPointerMove={(event) => {
+                const drag = dragRef.current;
+                const scroller = scrollerRef.current;
+                if (!drag || !scroller || drag.pointerId !== event.pointerId) {
+                  return;
+                }
+                const delta = event.clientX - drag.startX;
+                if (Math.abs(delta) > 6) drag.moved = true;
+                scroller.scrollLeft = drag.startScroll - delta;
+              }}
+              onPointerUp={endDrag}
+              onPointerCancel={endDrag}
+              className="flex aspect-[4/5] touch-pan-y snap-x snap-mandatory overflow-x-auto overscroll-x-contain scroll-smooth [-ms-overflow-style:none] [scrollbar-width:none] sm:aspect-square lg:aspect-[5/6] [&::-webkit-scrollbar]:hidden cursor-grab active:cursor-grabbing"
               aria-label={`${name} photo gallery`}
               role="region"
             >
@@ -333,7 +394,7 @@ function PhotoGallery({
                     src={photo}
                     alt={`${name} photo ${index + 1} of ${photos.length}`}
                     draggable={false}
-                    className="h-full w-full object-contain select-none"
+                    className="pointer-events-none h-full w-full object-contain select-none"
                   />
                 </div>
               ))}
