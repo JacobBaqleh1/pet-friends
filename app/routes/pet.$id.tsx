@@ -295,12 +295,32 @@ function PhotoGallery({
     setIsDragging(false);
   }, [activePhoto]);
 
+  useEffect(() => {
+    if (!hasMultiple) return;
+    const onKeyDown = (event: KeyboardEvent) => {
+      if (event.key === "ArrowLeft" && activePhoto > 0) {
+        event.preventDefault();
+        onPhotoChange(activePhoto - 1);
+      }
+      if (event.key === "ArrowRight" && activePhoto < photos.length - 1) {
+        event.preventDefault();
+        onPhotoChange(activePhoto + 1);
+      }
+    };
+    window.addEventListener("keydown", onKeyDown);
+    return () => window.removeEventListener("keydown", onKeyDown);
+  }, [activePhoto, hasMultiple, onPhotoChange, photos.length]);
+
+  const resetDrag = () => {
+    dragRef.current = null;
+    setDragOffset(0);
+    setIsDragging(false);
+  };
+
   const finishDrag = (clientX: number) => {
     const drag = dragRef.current;
-    dragRef.current = null;
     if (!drag || drag.axis !== "horizontal") {
-      setDragOffset(0);
-      setIsDragging(false);
+      resetDrag();
       return;
     }
 
@@ -317,8 +337,7 @@ function PhotoGallery({
       }
     }
 
-    setIsDragging(false);
-    setDragOffset(0);
+    resetDrag();
     if (next !== activePhoto) {
       onPhotoChange(next);
     }
@@ -401,6 +420,9 @@ function PhotoGallery({
                 if (dragRef.current?.pointerId !== event.pointerId) return;
                 finishDrag(event.clientX);
               }}
+              onLostPointerCapture={() => {
+                if (dragRef.current) resetDrag();
+              }}
               style={{ touchAction: isDragging ? "none" : "pan-y" }}
               className="relative aspect-[5/4] max-w-full cursor-grab active:cursor-grabbing sm:aspect-square lg:aspect-[5/6]"
               aria-label={`${name} photo gallery`}
@@ -418,7 +440,7 @@ function PhotoGallery({
               >
                 {photos.map((photo, index) => (
                   <div
-                    key={photo}
+                    key={`slide-${index}`}
                     className="flex h-full w-full shrink-0 basis-full items-center justify-center bg-slate-100"
                   >
                     <img
@@ -489,7 +511,7 @@ function PhotoGallery({
           <div className="flex gap-2.5 overflow-x-auto pb-1 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
             {photos.map((photo, index) => (
               <button
-                key={`thumb-${photo}`}
+                key={`thumb-${index}`}
                 type="button"
                 onClick={() => onPhotoChange(index)}
                 aria-label={`View photo ${index + 1}`}

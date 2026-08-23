@@ -42,17 +42,19 @@ const CAT_COLORS = [
 
 const DOG_COLORS = [
   "Black",
-  "White",
+  "White / Cream",
   "Brown / Chocolate",
   "Gray / Blue / Silver",
-  "Buff / Tan / Fawn",
-  "Red / Golden / Orange / Chestnut",
+  "Apricot / Beige",
+  "Golden",
+  "Red / Chestnut / Orange",
   "Yellow / Tan / Blond / Fawn",
-  "Tricolor (Tan/Brown & Black & White)",
+  "Tricolor (Brown, Black, & White)",
   "Bicolor",
   "Brindle",
   "Merle (Blue)",
   "Merle (Red)",
+  "Sable",
 ] as const;
 
 function readOptional(param: string | null) {
@@ -218,6 +220,17 @@ export default function SearchResults() {
 
           {/* Filters */}
           <Form
+            key={[
+              searchParams.age,
+              searchParams.sex,
+              searchParams.size,
+              searchParams.color,
+              searchParams.coat,
+              searchParams.houseTrained,
+              searchParams.specialNeeds,
+              searchParams.declawed,
+              searchParams.petType,
+            ].join("|")}
             method="get"
             className="mb-8 rounded-3xl border border-white/70 bg-white/90 p-4 shadow-soft backdrop-blur sm:p-6"
           >
