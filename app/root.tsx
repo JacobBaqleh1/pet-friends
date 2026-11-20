@@ -64,16 +64,12 @@ function Document({ children }: { children: React.ReactNode }) {
         <meta charSet="utf-8" />
         <meta
           name="viewport"
-          content="width=device-
- width,initial-scale=1"
+          content="width=device-width,initial-scale=1"
         />
         <Meta />
         <Links />
       </head>
-      <body
-        className="bg-background dark:bg-darkBackground
- text-lg text-text dark:text-darkText"
-      >
+      <body className="bg-background text-lg text-text dark:bg-darkBackground dark:text-darkText">
         <PageTransitionProgressBar />
         {children}
         <ScrollRestoration />
