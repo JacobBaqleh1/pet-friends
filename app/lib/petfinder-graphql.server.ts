@@ -18,6 +18,11 @@ const SEARCH_ANIMAL_QUERY = `query SearchAnimal($pagination: PaginationInfoInput
         breed { primary mixed }
         age { label value }
       }
+      _media {
+        mediaId
+        mediaIndex
+        mimeType
+      }
       _contact {
         address { city state }
       }
@@ -74,6 +79,7 @@ export type PetfinderAnimal = {
   id: string;
   name: string;
   photoUrl: string | null;
+  photoUrls: string[];
   breed: string;
   age: string;
   size: string;
@@ -272,6 +278,7 @@ function mapAnimal(animal: GraphQLAnimal): PetfinderAnimal {
     id: animal.animalId,
     name: animal.animalName,
     photoUrl: photos[0] ?? null,
+    photoUrls: photos,
     breed: animal.physical?.breed?.primary
       ? `${animal.physical.breed.primary}${animal.physical.breed.mixed ? " Mix" : ""}`
       : "Breed unknown",

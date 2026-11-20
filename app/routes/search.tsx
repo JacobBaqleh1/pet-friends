@@ -9,6 +9,7 @@ import {
   isRouteErrorResponse,
 } from "@remix-run/react";
 import Navbar from "../components/navbar";
+import SearchCardPhotos from "../components/search-card-photos";
 import { geocodeLocation } from "../lib/geocode.server";
 import {
   searchAnimalsNearPoint,
@@ -440,43 +441,51 @@ export default function SearchResults() {
           ) : (
             <>
               <div className="mb-12 grid grid-cols-1 gap-8 sm:grid-cols-2 xl:grid-cols-3">
-                {animals.map((animal) => (
-                  <Link
-                    key={animal.id}
-                    to={`/pet/${animal.id}`}
-                    className="group overflow-hidden rounded-3xl border border-gray-100 bg-white shadow-soft transition-all duration-300 hover:-translate-y-2 hover:shadow-medium"
-                  >
-                    <div className="relative aspect-square overflow-hidden">
-                      <img
-                        src={animal.photoUrl ?? ""}
-                        alt={`${animal.name} - ${animal.breed}`}
-                        className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-110"
+                {animals.map((animal) => {
+                  const photos =
+                    animal.photoUrls.length > 0
+                      ? animal.photoUrls
+                      : animal.photoUrl
+                        ? [animal.photoUrl]
+                        : [];
+                  const petHref = `/pet/${animal.id}`;
+
+                  return (
+                    <article
+                      key={animal.id}
+                      className="group overflow-hidden rounded-3xl border border-gray-100 bg-white shadow-soft transition-all duration-300 hover:-translate-y-2 hover:shadow-medium"
+                    >
+                      <SearchCardPhotos
+                        photos={photos}
+                        name={animal.name}
+                        breed={animal.breed}
+                        href={petHref}
                       />
-                    </div>
-                    <div className="p-6">
-                      <h3 className="mb-2 text-xl font-bold text-gray-800 transition-colors duration-200 group-hover:text-primary-600">
-                        {animal.name}
-                      </h3>
-                      <p className="mb-1 text-sm text-gray-600">
-                        {animal.breed}
-                      </p>
-                      <p className="mb-4 text-sm text-gray-500">
-                        {animal.locationLabel}
-                      </p>
-                      <div className="flex items-center justify-between text-sm">
-                        <span className="rounded-full bg-primary-100 px-3 py-1 text-primary-700">
-                          {animal.age}
-                        </span>
-                        <span className="rounded-full bg-secondary-100 px-3 py-1 text-secondary-700">
-                          {animal.size}
-                        </span>
-                      </div>
-                      <p className="mt-4 text-sm font-medium text-primary-600">
-                        Meet {animal.name} →
-                      </p>
-                    </div>
-                  </Link>
-                ))}
+                      <Link to={petHref} className="block p-6">
+                        <h3 className="mb-2 text-xl font-bold text-gray-800 transition-colors duration-200 group-hover:text-primary-600">
+                          {animal.name}
+                        </h3>
+                        <p className="mb-1 text-sm text-gray-600">
+                          {animal.breed}
+                        </p>
+                        <p className="mb-4 text-sm text-gray-500">
+                          {animal.locationLabel}
+                        </p>
+                        <div className="flex items-center justify-between text-sm">
+                          <span className="rounded-full bg-primary-100 px-3 py-1 text-primary-700">
+                            {animal.age}
+                          </span>
+                          <span className="rounded-full bg-secondary-100 px-3 py-1 text-secondary-700">
+                            {animal.size}
+                          </span>
+                        </div>
+                        <p className="mt-4 text-sm font-medium text-primary-600">
+                          Meet {animal.name} →
+                        </p>
+                      </Link>
+                    </article>
+                  );
+                })}
               </div>
 
               {totalPages > 1 && (
