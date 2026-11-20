@@ -70,6 +70,12 @@ const ORGANIZATION_QUERY = `query Organization($id: String!, $idType: String!) {
   }
 }`;
 
+const ANIMAL_BREEDS_QUERY = `query AnimalBreeds($species: String!, $animalType: String!) {
+  animalBreeds(species: $species, animalType: $animalType) {
+    name
+  }
+}`;
+
 export type PetfinderAnimal = {
   id: string;
   name: string;
@@ -301,11 +307,35 @@ export type AnimalSearchFilters = {
   sex?: string | null;
   size?: string | null;
   color?: string | null;
+  breed?: string | null;
   coatLength?: string | null;
   houseTrained?: boolean | null;
   specialNeeds?: boolean | null;
   declawed?: boolean | null;
 };
+
+export async function getAnimalBreeds(
+  animalType: string
+): Promise<string[]> {
+  const type = animalType.toLowerCase();
+  if (!["dog", "cat"].includes(type)) return [];
+
+  try {
+    const data = await petfinderGraphql<{
+      animalBreeds?: Array<{ name?: string | null } | null> | null;
+    }>(ANIMAL_BREEDS_QUERY, {
+      species: type,
+      animalType: type,
+    });
+
+    return (data.animalBreeds ?? [])
+      .map((breed) => breed?.name?.trim())
+      .filter((name): name is string => Boolean(name));
+  } catch (error) {
+    console.error("Failed to load animal breeds", error);
+    return [];
+  }
+}
 
 export async function searchAnimalsNearPoint(options: {
   latitude: number;
@@ -338,6 +368,7 @@ export async function searchAnimalsNearPoint(options: {
   if (extra?.sex) filters.sex = [extra.sex];
   if (extra?.size) filters.size = [extra.size];
   if (extra?.color) filters.colors = [extra.color];
+  if (extra?.breed) filters.breeds = [extra.breed];
   if (extra?.coatLength) filters.coat_length = [extra.coatLength];
   if (typeof extra?.houseTrained === "boolean") {
     filters.house_trained = extra.houseTrained;

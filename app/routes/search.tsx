@@ -11,6 +11,7 @@ import {
 import Navbar from "../components/navbar";
 import { geocodeLocation } from "../lib/geocode.server";
 import {
+  getAnimalBreeds,
   searchAnimalsNearPoint,
   type AnimalSearchFilters,
 } from "../lib/petfinder-graphql.server";
@@ -92,6 +93,7 @@ export async function loader({ request }: LoaderFunctionArgs) {
     sex: readOptional(url.searchParams.get("sex")),
     size: readOptional(url.searchParams.get("size")),
     color: readOptional(url.searchParams.get("color")),
+    breed: readOptional(url.searchParams.get("breed")),
     coatLength: readOptional(url.searchParams.get("coat")),
     houseTrained: readBooleanFlag(url.searchParams.get("house_trained")),
     specialNeeds: readBooleanFlag(url.searchParams.get("special_needs")),
@@ -111,16 +113,20 @@ export async function loader({ request }: LoaderFunctionArgs) {
     throw new Response("Please choose dogs or cats.", { status: 400 });
   }
 
+  const normalizedPetType = petType.toLowerCase();
   const geo = await geocodeLocation(location);
-  const results = await searchAnimalsNearPoint({
-    latitude: geo.latitude,
-    longitude: geo.longitude,
-    distanceMiles: Number.isFinite(distance) ? distance : 25,
-    petType: petType.toLowerCase(),
-    page: Number.isFinite(page) ? page : 1,
-    limit: Number.isFinite(limit) ? limit : 12,
-    filters,
-  });
+  const [results, breedOptions] = await Promise.all([
+    searchAnimalsNearPoint({
+      latitude: geo.latitude,
+      longitude: geo.longitude,
+      distanceMiles: Number.isFinite(distance) ? distance : 25,
+      petType: normalizedPetType,
+      page: Number.isFinite(page) ? page : 1,
+      limit: Number.isFinite(limit) ? limit : 12,
+      filters,
+    }),
+    getAnimalBreeds(normalizedPetType),
+  ]);
 
   return json({
     animals: results.animals,
@@ -128,14 +134,16 @@ export async function loader({ request }: LoaderFunctionArgs) {
     totalPages: results.totalPages,
     page: results.page,
     locationLabel: geo.label,
+    breedOptions,
     searchParams: {
       location,
-      petType: petType.toLowerCase(),
+      petType: normalizedPetType,
       distance: String(Number.isFinite(distance) ? distance : 25),
       age: filters.age ?? "",
       sex: filters.sex ?? "",
       size: filters.size ?? "",
       color: filters.color ?? "",
+      breed: filters.breed ?? "",
       coat: filters.coatLength ?? "",
       houseTrained: filters.houseTrained == null ? "" : String(filters.houseTrained),
       specialNeeds:
@@ -152,6 +160,7 @@ export default function SearchResults() {
     totalPages,
     page,
     locationLabel,
+    breedOptions,
     searchParams,
   } = useLoaderData<typeof loader>();
   const [params, setSearchParams] = useSearchParams();
@@ -163,6 +172,7 @@ export default function SearchResults() {
     searchParams.sex,
     searchParams.size,
     searchParams.color,
+    searchParams.breed,
     searchParams.coat,
     searchParams.houseTrained,
     searchParams.specialNeeds,
@@ -182,6 +192,7 @@ export default function SearchResults() {
       "sex",
       "size",
       "color",
+      "breed",
       "coat",
       "house_trained",
       "special_needs",
@@ -225,6 +236,7 @@ export default function SearchResults() {
               searchParams.sex,
               searchParams.size,
               searchParams.color,
+              searchParams.breed,
               searchParams.coat,
               searchParams.houseTrained,
               searchParams.specialNeeds,
@@ -327,6 +339,30 @@ export default function SearchResults() {
                   {colorOptions.map((color) => (
                     <option key={color} value={color}>
                       {color}
+                    </option>
+                  ))}
+                </select>
+              </label>
+
+              <label className="block text-sm">
+                <span className="mb-1.5 block font-semibold text-slate-700">
+                  Breed
+                </span>
+                <select
+                  name="breed"
+                  defaultValue={searchParams.breed}
+                  className="w-full rounded-xl border-2 border-slate-200 bg-white px-3 py-2.5 text-slate-700 focus:border-primary-400 focus:outline-none focus:ring-4 focus:ring-primary-100"
+                >
+                  <option value="">Any breed</option>
+                  {searchParams.breed &&
+                    !breedOptions.includes(searchParams.breed) && (
+                      <option value={searchParams.breed}>
+                        {searchParams.breed}
+                      </option>
+                    )}
+                  {breedOptions.map((breed) => (
+                    <option key={breed} value={breed}>
+                      {breed}
                     </option>
                   ))}
                 </select>
