@@ -1,42 +1,30 @@
-# Pet Friends built with Remix
+# StudioDeck
 
-Pet Friends helps people discover adoptable pets near them using Petfinder data.
+Open-source portfolio builder for artists. Stateless control plane; you own GitHub + Cloudflare.
 
-## How search works
+## Packages
 
-Petfinder retired their public OAuth API in December 2025. Their official **Custom Pet List Widget** only supports a fixed list of organization IDs and sends clicks to Petfinder.com.
+| Path | Role |
+|------|------|
+| `app/` | Next.js control plane (App Router) |
+| `template/` | Astro static portfolio template |
 
-This app restores a stay-on-site discovery flow:
-
-1. Geocode the user's zipcode or `"City, ST"` (Zippopotam.us)
-2. Query Petfinder's public GraphQL endpoint with a `point` + distance filter
-3. Show results and pet detail pages on Pet Friends
-4. Send only the final **Contact / Adopt** step to Petfinder (or the org website when available)
-
-The optional `/pets` page still embeds Petfinder's official widget for featured shelters.
-
-## Quick Start
+## Quick start
 
 ```bash
 npm install
 cp .env.example .env
-npm run dev
-```
-
-Open [http://localhost:3000/dashboard](http://localhost:3000/dashboard) and search by zipcode or town.
-
-## Optional widget config
-
-Generate a widget at [Petfinder's setup page](https://www.petfinder.com/tools-widgets/custom-pet-list/getting-started/) if you want `/pets` to feature specific organizations:
-
-```env
-PETFINDER_ORGANIZATION_IDS=["NY123","CA456"]
-PETFINDER_LIMIT=12
-PETFINDER_HIDE_BREED=true
+npm run dev          # control plane → http://localhost:3000
+npm run dev:template # portfolio preview
 ```
 
 ## Scripts
 
-- `npm run dev` — development server
-- `npm run build` — production build
-- `npm run start` — serve production build
+- `npm run typecheck` — TypeScript check for both packages
+- `npm run lint` — ESLint (app) + Astro check (template)
+- `npm run build:template` — builds static site to `template/dist`
+
+## Notes
+
+- Cloudflare adapter for the Next.js control plane is deferred past Phase 1; local `npm run dev` is the Phase 1 target.
+- Full product docs land in a later phase.

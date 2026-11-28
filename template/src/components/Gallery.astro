@@ -1,0 +1,213 @@
+---
+import type { MediaItem } from "../lib/content";
+import { mediaItemUrl } from "../lib/content";
+
+interface Props {
+  publicBaseUrl: string;
+  items: MediaItem[];
+}
+
+const { publicBaseUrl, items } = Astro.props;
+---
+
+<section class="gallery" aria-label="Portfolio gallery">
+  <ul class="gallery-grid">
+    {
+      items.map((item) => {
+        const src = mediaItemUrl(publicBaseUrl, item.key);
+        return (
+          <li class="gallery-item" data-type={item.type}>
+            {item.type === "image" ? (
+              <button
+                type="button"
+                class="gallery-trigger"
+                data-lightbox-src={src}
+                data-lightbox-title={item.title}
+                data-lightbox-description={item.description ?? ""}
+                aria-label={`Open ${item.title}`}
+              >
+                <img
+                  src={src}
+                  alt={item.title}
+                  width={item.width}
+                  height={item.height}
+                  loading="lazy"
+                />
+                <span class="gallery-caption">{item.title}</span>
+              </button>
+            ) : (
+              <figure class="gallery-video">
+                <video
+                  src={src}
+                  controls
+                  playsinline
+                  preload="metadata"
+                  width={item.width}
+                  height={item.height}
+                  aria-label={item.title}
+                >
+                  <track kind="captions" />
+                </video>
+                <figcaption>
+                  <strong>{item.title}</strong>
+                  {item.description && <span>{item.description}</span>}
+                </figcaption>
+              </figure>
+            )}
+          </li>
+        );
+      })
+    }
+  </ul>
+</section>
+
+<dialog class="lightbox" id="lightbox" aria-label="Image lightbox">
+  <form method="dialog" class="lightbox-close-row">
+    <button type="submit" aria-label="Close lightbox">Close</button>
+  </form>
+  <figure class="lightbox-figure">
+    <img id="lightbox-image" alt="" />
+    <figcaption>
+      <strong id="lightbox-title"></strong>
+      <span id="lightbox-description"></span>
+    </figcaption>
+  </figure>
+</dialog>
+
+<script>
+  const dialog = document.getElementById("lightbox") as HTMLDialogElement | null;
+  const image = document.getElementById("lightbox-image") as HTMLImageElement | null;
+  const titleEl = document.getElementById("lightbox-title");
+  const descriptionEl = document.getElementById("lightbox-description");
+
+  if (dialog && image && titleEl && descriptionEl) {
+    document.querySelectorAll<HTMLButtonElement>("[data-lightbox-src]").forEach((btn) => {
+      btn.addEventListener("click", () => {
+        const src = btn.dataset.lightboxSrc ?? "";
+        const title = btn.dataset.lightboxTitle ?? "";
+        const description = btn.dataset.lightboxDescription ?? "";
+        image.src = src;
+        image.alt = title;
+        titleEl.textContent = title;
+        descriptionEl.textContent = description;
+        dialog.showModal();
+      });
+    });
+
+    dialog.addEventListener("click", (event) => {
+      if (event.target === dialog) {
+        dialog.close();
+      }
+    });
+  }
+</script>
+
+<style>
+  .gallery-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  @media (min-width: 640px) {
+    .gallery-grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+
+  @media (min-width: 960px) {
+    .gallery-grid {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+  }
+
+  .gallery-trigger {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    width: 100%;
+    padding: 0;
+    border: 0;
+    background: transparent;
+    color: inherit;
+    text-align: left;
+    cursor: zoom-in;
+  }
+
+  .gallery-trigger img,
+  .gallery-video video {
+    display: block;
+    width: 100%;
+    height: auto;
+    aspect-ratio: 4 / 3;
+    object-fit: cover;
+    background: #ddd;
+  }
+
+  .gallery-caption,
+  .gallery-video figcaption {
+    display: flex;
+    flex-direction: column;
+    gap: 0.2rem;
+    font-size: 0.95rem;
+  }
+
+  .gallery-video figcaption span {
+    color: var(--muted);
+  }
+
+  .lightbox {
+    width: min(92vw, 960px);
+    max-height: 92vh;
+    padding: 1rem;
+    border: 0;
+    border-radius: 0.5rem;
+    background: #fff;
+    color: #111;
+  }
+
+  .lightbox::backdrop {
+    background: rgba(0, 0, 0, 0.72);
+  }
+
+  .lightbox-close-row {
+    display: flex;
+    justify-content: flex-end;
+    margin: 0 0 0.75rem;
+  }
+
+  .lightbox-close-row button {
+    border: 0;
+    background: transparent;
+    color: inherit;
+    cursor: pointer;
+    text-decoration: underline;
+    text-underline-offset: 0.15em;
+  }
+
+  .lightbox-figure {
+    margin: 0;
+  }
+
+  .lightbox-figure img {
+    display: block;
+    width: 100%;
+    height: auto;
+    max-height: 70vh;
+    object-fit: contain;
+  }
+
+  .lightbox-figure figcaption {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+    margin-top: 0.75rem;
+  }
+
+  .lightbox-figure figcaption span:empty {
+    display: none;
+  }
+</style>

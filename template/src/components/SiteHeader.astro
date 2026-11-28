@@ -1,0 +1,72 @@
+---
+import type { Social } from "../lib/content";
+
+interface Props {
+  title: string;
+  bio: string;
+  socials: Social[];
+}
+
+const { title, bio, socials } = Astro.props;
+---
+
+<header class="site-header">
+  <h1 class="site-title">{title}</h1>
+  <p class="site-bio">{bio}</p>
+  {
+    socials.length > 0 && (
+      <nav class="site-socials" aria-label="Social links">
+        <ul>
+          {socials.map((social) => (
+            <li>
+              <a href={social.url} rel="noopener noreferrer">
+                {social.label}
+              </a>
+            </li>
+          ))}
+        </ul>
+      </nav>
+    )
+  }
+</header>
+
+<style>
+  .site-header {
+    margin-bottom: 2.5rem;
+  }
+
+  .site-title {
+    margin: 0 0 0.75rem;
+    font-size: clamp(1.75rem, 4vw, 2.5rem);
+    font-weight: 600;
+    letter-spacing: -0.02em;
+    line-height: 1.15;
+  }
+
+  .site-bio {
+    margin: 0 0 1.25rem;
+    max-width: 40rem;
+    color: var(--muted);
+    font-size: 1.05rem;
+    line-height: 1.6;
+  }
+
+  .site-socials ul {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem 1.25rem;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .site-socials a {
+    color: var(--fg);
+    text-decoration: underline;
+    text-underline-offset: 0.2em;
+  }
+
+  .site-socials a:hover {
+    color: var(--accent);
+  }
+</style>
