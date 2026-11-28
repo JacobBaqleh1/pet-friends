@@ -1,0 +1,17 @@
+---
+import Layout from "../layouts/Layout.astro";
+import SiteHeader from "../components/SiteHeader.astro";
+import Gallery from "../components/Gallery.astro";
+import { content, sortedMedia } from "../lib/content";
+
+const items = sortedMedia(content.media.items);
+---
+
+<Layout title={content.site.title} description={content.site.bio}>
+  <SiteHeader
+    title={content.site.title}
+    bio={content.site.bio}
+    socials={content.site.socials}
+  />
+  <Gallery publicBaseUrl={content.media.publicBaseUrl} items={items} />
+</Layout>

@@ -1,0 +1,52 @@
+{
+  "version": 1,
+  "site": {
+    "title": "Alex Rivera",
+    "bio": "Photographer and motion artist based in Los Angeles. Commissions open.",
+    "socials": [
+      {
+        "label": "Instagram",
+        "url": "https://instagram.com/example"
+      },
+      {
+        "label": "Email",
+        "url": "mailto:hello@example.com"
+      }
+    ]
+  },
+  "media": {
+    "publicBaseUrl": "/media",
+    "items": [
+      {
+        "id": "work-1",
+        "type": "image",
+        "key": "work-1.jpg",
+        "title": "Harbor Light",
+        "description": "Golden hour over the marina.",
+        "order": 1,
+        "width": 800,
+        "height": 600
+      },
+      {
+        "id": "work-2",
+        "type": "image",
+        "key": "work-2.jpg",
+        "title": "Desert Study",
+        "description": "Warm tones, still air.",
+        "order": 2,
+        "width": 800,
+        "height": 600
+      },
+      {
+        "id": "work-3",
+        "type": "video",
+        "key": "work-3.mp4",
+        "title": "Loop Sketch",
+        "description": "Short motion loop (.mp4).",
+        "order": 3,
+        "width": 640,
+        "height": 360
+      }
+    ]
+  }
+}
